@@ -704,74 +704,106 @@ a {
    RESPONSIVIDADE - CELULAR
    ========================================================= */
 @media (max-width: 620px) {
+
     html {
-        scroll-padding-top: 150px;
+        scroll-padding-top: 120px;
     }
 
+    /* =========================
+       CABEÇALHO
+    ========================= */
     .cabecalho-institucional {
-        grid-template-columns: 52px 1fr 52px;
-        padding: 10px 3%;
-        border-width: 0;
+        height: auto;
+        min-height: 95px;
+        grid-template-columns: 42px 1fr 42px;
+        gap: 8px;
+        padding: 8px 2%;
     }
 
     .logo-loja-topo,
     .logo-direita {
-        width: 46px;
-        height: 46px;
+        width: 42px;
+        height: 42px;
         object-fit: contain;
     }
 
     .sigla-principal {
-        font-size: 1.55rem;
-        letter-spacing: .04em;
-        margin-bottom: 8px;
+        font-size: 1.15rem;
+        margin-bottom: 4px;
+        letter-spacing: .03em;
     }
 
     .titulo-cabecalho h1 {
-        font-size: .92rem;
-        line-height: 1.12;
+        font-size: .78rem;
+        line-height: 1.1;
+        white-space: normal;
     }
 
+    /* =========================
+       MENU
+    ========================= */
     .navbar {
-        padding: 10px 4%;
-        gap: 10px;
+        min-height: 58px;
+        padding: 8px 3%;
+        gap: 12px;
+    }
+
+    .menu-toggle {
+        width: 44px;
+        height: 44px;
+        flex-shrink: 0;
     }
 
     .btn-presenca {
-        max-width: 180px;
+        width: auto;
+        max-width: 210px;
+        font-size: .70rem;
+        padding: 11px 14px;
+        line-height: 1.1;
         text-align: center;
-        line-height: 1.2;
-        font-size: .72rem;
-        padding: 10px 14px;
     }
 
+    /* =========================
+       HERO
+    ========================= */
     .hero {
         min-height: auto;
     }
 
     .hero-content {
         min-height: auto;
-        padding: 30px 5% 42px;
-        gap: 24px;
+        grid-template-columns: 1fr;
+        gap: 18px;
+        padding: 28px 5% 34px;
+        text-align: center;
     }
 
     .hero-texto h2 {
-        font-size: 2.25rem;
+        font-size: 2rem;
+        line-height: 1.15;
+        margin-bottom: 18px;
     }
 
     .hero-texto p {
         font-size: 1rem;
+        line-height: 1.7;
+        margin-bottom: 24px;
+    }
+
+    .hero-logo {
+        width: 210px;
+        margin: 0 auto;
     }
 
     .btn-outline {
         width: 100%;
         padding: 15px 18px;
+        font-size: .95rem;
     }
 
-    .hero-logo {
-        width: 220px;
-    }
-
+    /* =========================
+       CARDS
+    ========================= */
     .atalhos,
     .reunioes-grid,
     .vm-grid,
@@ -780,22 +812,55 @@ a {
     }
 
     .atalhos {
-        padding-top: 24px;
+        padding: 20px 5% 30px;
+        gap: 18px;
     }
 
-    .secao {
-        padding: 58px 5%;
+    .atalho-card {
+        min-height: auto;
+        padding: 28px 20px;
+    }
+
+    .reunioes-grid {
+        gap: 18px;
     }
 
     .reuniao-card {
         min-height: auto;
+        padding: 22px;
     }
 
+    /* =========================
+       SEÇÕES
+    ========================= */
+    .secao {
+        padding: 52px 5%;
+    }
+
+    .secao h2 {
+        font-size: 2rem;
+        line-height: 1.15;
+    }
+
+    .secao p {
+        font-size: 1rem;
+        line-height: 1.9;
+    }
+
+    .secao-topo {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 14px;
+    }
+
+    /* =========================
+       MAPA
+    ========================= */
     .mapa {
-        height: 300px;
+        height: 280px;
     }
-}
 
+}
 
 /* =========================================================
    RESPONSIVIDADE - CELULARES PEQUENOS
