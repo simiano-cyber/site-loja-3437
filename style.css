@@ -5,7 +5,7 @@
 
 
 /* =========================================================
-   VARIÁVEIS GLOBAIS DE CORES E SOMBRAS
+   VARIÁVEIS GLOBAIS
    ========================================================= */
 :root {
     --azul: #061a38;
@@ -22,7 +22,7 @@
 
 
 /* =========================================================
-   RESET E CONFIGURAÇÕES BASE
+   RESET
    ========================================================= */
 * {
     box-sizing: border-box;
@@ -53,7 +53,7 @@ a {
 
 
 /* =========================================================
-   CABEÇALHO INSTITUCIONAL E MENU
+   CABEÇALHO
    ========================================================= */
 .topo {
     position: sticky;
@@ -125,6 +125,10 @@ a {
     white-space: nowrap;
 }
 
+
+/* =========================================================
+   MENU
+   ========================================================= */
 .navbar {
     height: 70px;
     background: linear-gradient(180deg, #082852 0%, #041834 100%);
@@ -207,7 +211,7 @@ a {
 
 
 /* =========================================================
-   HERO / CHAMADA PRINCIPAL
+   HERO
    ========================================================= */
 .hero {
     min-height: 430px;
@@ -302,7 +306,7 @@ a {
 
 
 /* =========================================================
-   ATALHOS PRINCIPAIS
+   ATALHOS
    ========================================================= */
 .atalhos {
     background: var(--creme-2);
@@ -442,7 +446,7 @@ a {
 
 
 /* =========================================================
-   CALENDÁRIO / REUNIÕES
+   CALENDÁRIO
    ========================================================= */
 .reunioes-grid {
     max-width: 1160px;
@@ -476,7 +480,7 @@ a {
 
 
 /* =========================================================
-   GALERIA DE VENERÁVEIS MESTRES
+   VENERÁVEIS MESTRES
    ========================================================= */
 .vm-grid {
     max-width: 760px;
@@ -586,7 +590,7 @@ a {
 
 
 /* =========================================================
-   RESPONSIVIDADE - TABLETS E CELULARES
+   RESPONSIVIDADE - TABLET
    ========================================================= */
 @media (max-width: 980px) {
     html {
@@ -695,31 +699,37 @@ a {
     }
 }
 
+
+/* =========================================================
+   RESPONSIVIDADE - CELULAR
+   ========================================================= */
 @media (max-width: 620px) {
     html {
         scroll-padding-top: 150px;
     }
 
     .cabecalho-institucional {
-        grid-template-columns: 64px 1fr 64px;
+        grid-template-columns: 52px 1fr 52px;
         padding: 10px 3%;
         border-width: 0;
     }
 
     .logo-loja-topo,
     .logo-direita {
-        width: 56px;
-        height: 56px;
+        width: 46px;
+        height: 46px;
         object-fit: contain;
     }
 
     .sigla-principal {
         font-size: 1.55rem;
         letter-spacing: .04em;
+        margin-bottom: 8px;
     }
 
     .titulo-cabecalho h1 {
-        font-size: .98rem;
+        font-size: .92rem;
+        line-height: 1.12;
     }
 
     .navbar {
@@ -728,9 +738,11 @@ a {
     }
 
     .btn-presenca {
-        max-width: 220px;
+        max-width: 180px;
         text-align: center;
         line-height: 1.2;
+        font-size: .72rem;
+        padding: 10px 14px;
     }
 
     .hero {
@@ -739,11 +751,12 @@ a {
 
     .hero-content {
         min-height: auto;
-        padding: 42px 5%;
+        padding: 30px 5% 42px;
+        gap: 24px;
     }
 
     .hero-texto h2 {
-        font-size: 2.4rem;
+        font-size: 2.25rem;
     }
 
     .hero-texto p {
@@ -753,6 +766,10 @@ a {
     .btn-outline {
         width: 100%;
         padding: 15px 18px;
+    }
+
+    .hero-logo {
+        width: 220px;
     }
 
     .atalhos,
@@ -779,32 +796,41 @@ a {
     }
 }
 
+
+/* =========================================================
+   RESPONSIVIDADE - CELULARES PEQUENOS
+   ========================================================= */
 @media (max-width: 390px) {
+    .cabecalho-institucional {
+        grid-template-columns: 46px 1fr 46px;
+    }
+
+    .logo-loja-topo,
+    .logo-direita {
+        width: 42px;
+        height: 42px;
+        object-fit: contain;
+    }
+
     .sigla-principal {
         font-size: 1.28rem;
     }
 
     .titulo-cabecalho h1 {
-        font-size: .82rem;
-    }
-
-    .logo-loja-topo,
-    .logo-direita {
-        width: 48px;
-        height: 48px;
-        object-fit: contain;
-    }
-
-    .cabecalho-institucional {
-        grid-template-columns: 54px 1fr 54px;
+        font-size: .78rem;
     }
 
     .btn-presenca {
-        font-size: .68rem;
-        padding: 11px 9px;
+        max-width: 165px;
+        font-size: .66rem;
+        padding: 10px 8px;
     }
 
     .hero-texto h2 {
         font-size: 2rem;
+    }
+
+    .hero-logo {
+        width: 200px;
     }
 }
