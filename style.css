@@ -1,0 +1,810 @@
+/* =========================================================
+   FONTES EXTERNAS
+   ========================================================= */
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800&family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700;800&display=swap');
+
+
+/* =========================================================
+   VARIÁVEIS GLOBAIS DE CORES E SOMBRAS
+   ========================================================= */
+:root {
+    --azul: #061a38;
+    --azul-2: #082650;
+    --azul-3: #041025;
+    --dourado: #d0a957;
+    --dourado-2: #f1d184;
+    --creme: #f4efe3;
+    --creme-2: #fffaf0;
+    --texto: #172039;
+    --borda: rgba(208,169,87,.38);
+    --sombra: 0 22px 55px rgba(0,0,0,.18);
+}
+
+
+/* =========================================================
+   RESET E CONFIGURAÇÕES BASE
+   ========================================================= */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 170px;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background: var(--creme);
+    color: var(--texto);
+    overflow-x: hidden;
+}
+
+img {
+    max-width: 100%;
+    display: block;
+}
+
+a {
+    color: inherit;
+}
+
+
+/* =========================================================
+   CABEÇALHO INSTITUCIONAL E MENU
+   ========================================================= */
+.topo {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 8px 24px rgba(0,0,0,.14);
+}
+
+.cabecalho-institucional {
+    height: 190px;
+    background: radial-gradient(circle at center, #fffdf6 0%, var(--creme) 64%, #e9dfcd 100%);
+    border-left: 3px solid var(--dourado);
+    border-right: 3px solid var(--dourado);
+    display: grid;
+    grid-template-columns: 160px minmax(0,1fr) 160px;
+    align-items: center;
+    gap: 20px;
+    padding: 12px 5.5% 14px;
+    position: relative;
+    overflow: hidden;
+}
+
+.cabecalho-institucional::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, rgba(208,169,87,.16), transparent 16%, transparent 84%, rgba(208,169,87,.16));
+    pointer-events: none;
+}
+
+.logo-cabecalho {
+    position: relative;
+    z-index: 2;
+    margin: auto;
+    filter: drop-shadow(0 7px 10px rgba(0,0,0,.16));
+}
+
+.logo-loja-topo,
+.logo-direita {
+    width: 120px;
+    height: 120px;
+    object-fit: contain;
+}
+
+.titulo-cabecalho {
+    text-align: center;
+    position: relative;
+    z-index: 2;
+}
+
+.sigla-principal {
+    font-family: 'Cinzel', serif;
+    color: var(--dourado);
+    font-weight: 800;
+    font-size: clamp(2.2rem,4.6vw,4.7rem);
+    letter-spacing: .09em;
+    line-height: 1;
+    margin-bottom: 18px;
+    text-shadow: 0 1px 0 #fff;
+}
+
+.titulo-cabecalho h1 {
+    font-family: 'Cinzel', serif;
+    color: #071657;
+    font-weight: 800;
+    font-size: clamp(1.35rem,2.85vw,2.75rem);
+    line-height: 1.08;
+    letter-spacing: .015em;
+    white-space: nowrap;
+}
+
+.navbar {
+    height: 70px;
+    background: linear-gradient(180deg, #082852 0%, #041834 100%);
+    border-top: 1px solid rgba(208,169,87,.45);
+    border-bottom: 2px solid var(--dourado);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 22px;
+    padding: 0 4.5%;
+    position: relative;
+}
+
+.menu {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(18px,2.2vw,36px);
+    height: 100%;
+    flex: 1;
+    min-width: 0;
+}
+
+.menu a {
+    text-decoration: none;
+    color: #fff;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: .88rem;
+    letter-spacing: .06em;
+    height: 100%;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    border-bottom: 4px solid transparent;
+    padding: 0 8px;
+    opacity: .95;
+}
+
+.menu a:hover,
+.menu a.ativo {
+    color: var(--dourado-2);
+    border-bottom-color: var(--dourado);
+}
+
+.btn-presenca,
+.btn-calendario {
+    background: linear-gradient(135deg, var(--dourado), #edc66d);
+    color: #051735;
+    text-decoration: none;
+    text-transform: uppercase;
+    font-weight: 800;
+    letter-spacing: .04em;
+    border-radius: 7px;
+    padding: 13px 18px;
+    box-shadow: 0 8px 18px rgba(0,0,0,.18);
+    white-space: nowrap;
+    font-size: .88rem;
+}
+
+.menu-toggle {
+    display: none;
+    width: 46px;
+    height: 44px;
+    border: 1px solid var(--borda);
+    border-radius: 8px;
+    background: transparent;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.menu-toggle span {
+    width: 23px;
+    height: 2px;
+    background: var(--dourado-2);
+    border-radius: 999px;
+}
+
+
+/* =========================================================
+   HERO / CHAMADA PRINCIPAL
+   ========================================================= */
+.hero {
+    min-height: 430px;
+    background: linear-gradient(rgba(5,21,48,.88), rgba(5,21,48,.9)), radial-gradient(circle at 50% 45%, rgba(208,169,87,.1), transparent 22%), linear-gradient(90deg, #06152e, #0c2d5d, #06152e);
+    position: relative;
+    overflow: hidden;
+    border-bottom: 1px solid var(--dourado);
+}
+
+.hero::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, rgba(4,15,34,.9) 0%, transparent 14%, transparent 86%, rgba(4,15,34,.9) 100%);
+}
+
+.hero::after {
+    content: "∴";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%,-50%);
+    font-family: 'Cinzel', serif;
+    font-size: 18rem;
+    color: rgba(255,255,255,.045);
+    line-height: 1;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 2;
+    max-width: 1160px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1.05fr .95fr;
+    gap: 60px;
+    align-items: center;
+    min-height: 430px;
+    padding: 42px 6%;
+}
+
+.hero-texto h2 {
+    font-family: 'Cormorant Garamond', serif;
+    color: #fff;
+    font-size: clamp(2.4rem,4.7vw,4.2rem);
+    line-height: 1.08;
+    font-weight: 700;
+    margin-bottom: 22px;
+}
+
+.hero-texto h2 span {
+    color: var(--dourado);
+}
+
+.hero-texto p {
+    color: #fff;
+    font-size: 1.18rem;
+    line-height: 1.65;
+    max-width: 520px;
+    margin-bottom: 28px;
+}
+
+.hero-logo-wrap {
+    display: flex;
+    justify-content: center;
+}
+
+.hero-logo {
+    width: min(360px,80vw);
+    filter: drop-shadow(0 25px 35px rgba(0,0,0,.42));
+}
+
+.btn-outline {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    color: #fff;
+    border: 2px solid var(--dourado);
+    padding: 16px 28px;
+    border-radius: 7px;
+    text-transform: uppercase;
+    font-weight: 700;
+    letter-spacing: .04em;
+    background: rgba(255,255,255,.04);
+}
+
+.btn-outline:hover {
+    background: var(--dourado);
+    color: #06152e;
+}
+
+
+/* =========================================================
+   ATALHOS PRINCIPAIS
+   ========================================================= */
+.atalhos {
+    background: var(--creme-2);
+    display: grid;
+    grid-template-columns: repeat(4,1fr);
+    gap: 24px;
+    max-width: 1160px;
+    margin: 0 auto;
+    padding: 32px 6% 36px;
+}
+
+.atalho-card {
+    background: linear-gradient(180deg, #fffdf8, #f5efe3);
+    border: 1px solid #ded5c7;
+    border-radius: 7px;
+    padding: 28px 22px;
+    text-align: center;
+    box-shadow: 0 10px 22px rgba(0,0,0,.08);
+    min-height: 205px;
+}
+
+.icone {
+    font-family: 'Cinzel', serif;
+    color: var(--dourado);
+    font-size: 2.35rem;
+    margin-bottom: 12px;
+    font-weight: 800;
+}
+
+.atalho-card h3,
+.vm-card h3,
+.contato h3 {
+    font-family: 'Cinzel', serif;
+    color: #071657;
+    margin-bottom: 10px;
+}
+
+.atalho-card p {
+    font-size: .95rem;
+    line-height: 1.6;
+    margin-bottom: 15px;
+}
+
+.atalho-card a {
+    text-decoration: none;
+    text-transform: uppercase;
+    font-weight: 800;
+    color: #071657;
+    font-size: .82rem;
+    letter-spacing: .07em;
+}
+
+
+/* =========================================================
+   SEÇÕES GERAIS
+   ========================================================= */
+.secao {
+    padding: 76px 6%;
+}
+
+.secao > *,
+.secao-topo {
+    max-width: 1160px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.secao-azul {
+    background: linear-gradient(135deg, #051936, #082a58);
+    color: #fff;
+}
+
+.clara {
+    background: var(--creme);
+}
+
+.pre-titulo {
+    display: block;
+    color: var(--dourado);
+    font-size: .8rem;
+    letter-spacing: .22em;
+    text-transform: uppercase;
+    font-weight: 800;
+    margin-bottom: 10px;
+}
+
+.secao h2 {
+    font-family: 'Cinzel', serif;
+    color: var(--dourado);
+    font-size: clamp(1.7rem,3vw,2.3rem);
+    margin-bottom: 22px;
+}
+
+.clara h2 {
+    color: #071657;
+}
+
+.secao p {
+    font-size: 1.08rem;
+    line-height: 1.8;
+}
+
+.texto-largo {
+    max-width: 920px;
+}
+
+.duas-colunas {
+    display: grid;
+    grid-template-columns: minmax(0,1fr) 330px;
+    gap: 54px;
+    align-items: center;
+}
+
+.duas-colunas > * {
+    max-width: none;
+}
+
+.brasao-box {
+    background: #fff;
+    border: 1px solid #ded5c7;
+    border-radius: 10px;
+    padding: 28px;
+    box-shadow: var(--sombra);
+}
+
+.secao-topo {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 26px;
+}
+
+.secao-topo h2 {
+    margin: 0;
+}
+
+
+/* =========================================================
+   CALENDÁRIO / REUNIÕES
+   ========================================================= */
+.reunioes-grid {
+    max-width: 1160px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(4,1fr);
+    gap: 22px;
+}
+
+.reuniao-card {
+    background: #fffdf8;
+    color: #071657;
+    border-radius: 7px;
+    border: 1px solid rgba(208,169,87,.4);
+    padding: 24px;
+    min-height: 120px;
+    box-shadow: 0 10px 24px rgba(0,0,0,.18);
+}
+
+.reuniao-card strong {
+    display: block;
+    text-transform: uppercase;
+    font-size: .95rem;
+    margin-bottom: 12px;
+}
+
+.reuniao-card span {
+    color: #445;
+    line-height: 1.6;
+}
+
+
+/* =========================================================
+   GALERIA DE VENERÁVEIS MESTRES
+   ========================================================= */
+.vm-grid {
+    max-width: 760px;
+    margin: 34px auto 0;
+    display: grid;
+    grid-template-columns: repeat(2,1fr);
+    gap: 24px;
+}
+
+.vm-card {
+    text-align: center;
+    background: #fffdf8;
+    border: 1px solid #ded5c7;
+    border-radius: 10px;
+    padding: 28px;
+    box-shadow: var(--sombra);
+}
+
+.foto-vm {
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin: 0 auto 18px;
+    background: linear-gradient(135deg, var(--dourado), var(--dourado-2));
+    border: 3px solid var(--dourado);
+}
+
+.foto-vm img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.foto-vm span {
+    display: none;
+    width: 100%;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Cinzel', serif;
+    font-size: 2rem;
+    font-weight: 800;
+    color: #071657;
+}
+
+.vm-card p {
+    color: #715c24;
+    font-weight: 700;
+}
+
+
+/* =========================================================
+   CONTATO E MAPA
+   ========================================================= */
+.contato-grid {
+    max-width: 1160px;
+    margin: 28px auto;
+    display: grid;
+    grid-template-columns: repeat(2,1fr);
+    gap: 24px;
+}
+
+.contato-grid article {
+    background: rgba(255,255,255,.06);
+    border: 1px solid var(--borda);
+    border-radius: 8px;
+    padding: 24px;
+}
+
+.contato-grid h3 {
+    color: var(--dourado-2);
+}
+
+.contato-grid a {
+    color: var(--dourado-2);
+    font-weight: 800;
+}
+
+.mapa {
+    max-width: 1160px;
+    height: 360px;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid var(--borda);
+    box-shadow: var(--sombra);
+}
+
+.mapa iframe {
+    width: 100%;
+    height: 100%;
+    border: 0;
+}
+
+
+/* =========================================================
+   RODAPÉ
+   ========================================================= */
+.footer {
+    background: #020a18;
+    color: var(--dourado);
+    text-align: center;
+    padding: 26px 6%;
+    font-family: 'Cinzel', serif;
+    border-top: 1px solid var(--borda);
+}
+
+
+/* =========================================================
+   RESPONSIVIDADE - TABLETS E CELULARES
+   ========================================================= */
+@media (max-width: 980px) {
+    html {
+        scroll-padding-top: 122px;
+    }
+
+    .cabecalho-institucional {
+        height: auto;
+        min-height: 112px;
+        grid-template-columns: 92px 1fr 92px;
+        padding: 12px 4%;
+    }
+
+    .logo-loja-topo,
+    .logo-direita {
+        width: 78px;
+        height: 78px;
+        object-fit: contain;
+    }
+
+    .sigla-principal {
+        font-size: clamp(1.55rem,6vw,2.6rem);
+        margin-bottom: 9px;
+    }
+
+    .titulo-cabecalho h1 {
+        font-size: clamp(1rem,4vw,1.6rem);
+        white-space: normal;
+    }
+
+    .navbar {
+        height: auto;
+        min-height: 62px;
+        justify-content: space-between;
+    }
+
+    .menu-toggle {
+        display: flex;
+    }
+
+    .menu {
+        position: absolute;
+        left: 4%;
+        right: 4%;
+        top: calc(100% + 9px);
+        height: auto;
+        background: #061a38;
+        border: 1px solid var(--borda);
+        border-radius: 12px;
+        padding: 10px;
+        display: none;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0;
+        box-shadow: var(--sombra);
+    }
+
+    .menu.is-open {
+        display: flex;
+    }
+
+    .menu a {
+        height: auto;
+        padding: 14px;
+        border-bottom: 0;
+        border-radius: 8px;
+    }
+
+    .btn-presenca {
+        font-size: .78rem;
+        padding: 12px;
+    }
+
+    .hero-content {
+        grid-template-columns: 1fr;
+        text-align: center;
+        gap: 28px;
+    }
+
+    .hero-texto p {
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .atalhos,
+    .reunioes-grid {
+        grid-template-columns: repeat(2,1fr);
+    }
+
+    .duas-colunas {
+        grid-template-columns: 1fr;
+    }
+
+    .brasao-box {
+        max-width: 300px;
+        margin: 0 auto;
+    }
+
+    .secao-topo {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .hero-logo {
+        width: 280px;
+    }
+}
+
+@media (max-width: 620px) {
+    html {
+        scroll-padding-top: 150px;
+    }
+
+    .cabecalho-institucional {
+        grid-template-columns: 64px 1fr 64px;
+        padding: 10px 3%;
+        border-width: 0;
+    }
+
+    .logo-loja-topo,
+    .logo-direita {
+        width: 56px;
+        height: 56px;
+        object-fit: contain;
+    }
+
+    .sigla-principal {
+        font-size: 1.55rem;
+        letter-spacing: .04em;
+    }
+
+    .titulo-cabecalho h1 {
+        font-size: .98rem;
+    }
+
+    .navbar {
+        padding: 10px 4%;
+        gap: 10px;
+    }
+
+    .btn-presenca {
+        max-width: 220px;
+        text-align: center;
+        line-height: 1.2;
+    }
+
+    .hero {
+        min-height: auto;
+    }
+
+    .hero-content {
+        min-height: auto;
+        padding: 42px 5%;
+    }
+
+    .hero-texto h2 {
+        font-size: 2.4rem;
+    }
+
+    .hero-texto p {
+        font-size: 1rem;
+    }
+
+    .btn-outline {
+        width: 100%;
+        padding: 15px 18px;
+    }
+
+    .atalhos,
+    .reunioes-grid,
+    .vm-grid,
+    .contato-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .atalhos {
+        padding-top: 24px;
+    }
+
+    .secao {
+        padding: 58px 5%;
+    }
+
+    .reuniao-card {
+        min-height: auto;
+    }
+
+    .mapa {
+        height: 300px;
+    }
+}
+
+@media (max-width: 390px) {
+    .sigla-principal {
+        font-size: 1.28rem;
+    }
+
+    .titulo-cabecalho h1 {
+        font-size: .82rem;
+    }
+
+    .logo-loja-topo,
+    .logo-direita {
+        width: 48px;
+        height: 48px;
+        object-fit: contain;
+    }
+
+    .cabecalho-institucional {
+        grid-template-columns: 54px 1fr 54px;
+    }
+
+    .btn-presenca {
+        font-size: .68rem;
+        padding: 11px 9px;
+    }
+
+    .hero-texto h2 {
+        font-size: 2rem;
+    }
+}
