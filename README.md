@@ -1,32 +1,56 @@
-# A∴R∴L∴S∴ Tradição e Progresso 3437 - V3.0
+# A.R.L.S. Tradição e Progresso 3437
 
-Esta versão combina os principais pontos fortes das versões anteriores:
+Site institucional da Loja Tradição e Progresso 3437, com visual responsivo, calendário de reuniões e página local de confirmação de presença.
 
-- **V1:** organização dos arquivos, separação entre HTML/CSS/JS, comentários por bloco e links funcionais.
-- **V2:** layout visual, estrutura institucional moderna, responsividade e acabamento gráfico.
-
-## Estrutura
+## Estrutura atual
 
 ```text
-V3.0/
+site-loja-3437-main/
 ├── index.html
-├── style.css
 ├── script.js
+├── style.css
 ├── README.md
+├── data/
+│   └── reunioes.json
+├── confirmacao/
+│   ├── index.html
+│   └── script.js
+├── admin/
+│   ├── index.html
+│   └── script.js
+├── apps-script/
+│   ├── Code.gs
+│   └── README.md
 ├── comparecimento/
 │   └── index.html
 └── assets/
     └── img/
         ├── logo-gob.png
         ├── logo-gobsp.png
-        └── logo-loja.png
+        ├── logo-loja.png
+        ├── vm-alexandre-amorim.png
+        └── vm-jose-solon.png
 ```
 
-## Observações
+## O que já está integrado
 
-- O HTML foi reorganizado e comentado por seções.
-- O CSS mantém o visual da V2, com blocos comentados para facilitar manutenção.
-- O JavaScript está separado e comentado.
-- O link de confirmação de presença permanece apontando para o formulário oficial.
-- O mapa foi corrigido para usar endereço direto via Google Maps embed.
-- As fotos dos Veneráveis Mestres usam fallback com iniciais caso as imagens ainda não existam.
+- A home carrega as próximas reuniões a partir de `data/reunioes.json`.
+- A home tenta primeiro a agenda remota do Apps Script e usa `data/reunioes.json` como fallback.
+- O link de confirmação agora aponta para `/confirmacao/`.
+- A página `/confirmacao/` envia os dados para o mesmo Apps Script já usado hoje.
+- O formulário já grava em Google Sheets e continua compatível com o fluxo atual.
+- A área `/admin/` permite editar a agenda localmente, importar/exportar JSON e sincronizar com o Apps Script quando houver uma URL configurada.
+- No teste local, a agenda salva no admin fica em `localStorage`, e a home e a confirmação leem esse valor antes do fallback em arquivo.
+- O arquivo `comparecimento/index.html` permanece como redirecionamento legado para `/confirmacao/`.
+- O diretório `apps-script/` contém o código de referência para a integração com a planilha.
+
+## Próximos passos
+
+- Criar a área administrativa para cadastrar reuniões.
+- Permitir atualizar a agenda sem editar HTML.
+- Associar fotos de 1 ou 2 imagens por reunião.
+- Conectar a contagem de confirmações por reunião ao Google Sheets.
+
+## Observação
+
+As fotos podem continuar no próprio repositório do GitHub, porque o upload ocorre depois da reunião e isso simplifica a operação neste momento.

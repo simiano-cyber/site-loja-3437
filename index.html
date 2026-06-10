@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <!-- =========================================================
@@ -50,23 +50,23 @@
       </button>
 
       <div class="menu">
-        <a href="#inicio" class="ativo">⌂ Início</a>
-        <a href="#loja">A Loja</a>
-        <a href="#maconaria">A Maçonaria</a>
-        <a href="#calendario">Calendário</a>
-        <a href="#harmonia">Harmonia</a>
-        <a href="#fotos">Fotos</a>
-        <a href="#contato">Contato</a>
+        <a href="#inicio" class="ativo"><span class="menu-ico">⌂</span><span>Início</span></a>
+        <a href="#loja"><span class="menu-ico">✦</span><span>A Loja</span></a>
+        <a href="#maconaria"><span class="menu-ico">⟡</span><span>Maçonaria</span></a>
+        <a href="#calendario"><span class="menu-ico">▣</span><span>Calendário</span></a>
+        <a href="#harmonia"><span class="menu-ico">◌</span><span>Harmonia</span></a>
+        <a href="#fotos"><span class="menu-ico">◉</span><span>Veneráveis</span></a>
+        <a href="#contato"><span class="menu-ico">✉</span><span>Contato</span></a>
       </div>
 
       <a
-        class="btn-presenca"
-        href="https://simiano-cyber.github.io/confirmacao-presenca-3437/"
-        target="_blank"
-        rel="noopener noreferrer"
+        class="btn-admin"
+        href="admin/index.html"
       >
-        ▣ Confirmação de Presença
+        <span class="menu-ico">⚙</span>
+        <span>Admin</span>
       </a>
+
     </nav>
   </header>
 
@@ -88,14 +88,16 @@
             Desde 24/05/2002 promovendo a união, a moral, o conhecimento e o aperfeiçoamento do ser humano.
           </p>
 
-          <a
-            class="btn-outline"
-            href="https://simiano-cyber.github.io/confirmacao-presenca-3437/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            ▣ Confirmação de Presença
-          </a>
+          <div class="hero-actions">
+            <a class="btn-outline btn-outline-primary" href="confirmacao/index.html">
+              <span class="menu-ico">▣</span>
+              <span>Confirmar Presença</span>
+            </a>
+            <a class="btn-outline btn-outline-secondary" href="#calendario">
+              <span class="menu-ico">▣</span>
+              <span>Ver Calendário</span>
+            </a>
+          </div>
         </div>
 
         <div class="hero-logo-wrap">
@@ -109,64 +111,65 @@
     </section>
 
     <!-- =========================================================
-         ATALHOS PRINCIPAIS
-         ========================================================= -->
-    <section class="atalhos" aria-label="Atalhos principais">
-      <article class="atalho-card">
-        <div class="icone">▥</div>
-        <h3>Nossa História</h3>
-        <p>Conheça a trajetória da Loja Tradição e Progresso 3437 e seus marcos importantes.</p>
-        <a href="#loja">Saiba mais →</a>
-      </article>
-
-      <article class="atalho-card">
-        <div class="icone">∴</div>
-        <h3>A Maçonaria</h3>
-        <p>Entenda os princípios, valores e objetivos que norteiam a Maçonaria e nossa atuação.</p>
-        <a href="#maconaria">Saiba mais →</a>
-      </article>
-
-      <article class="atalho-card">
-        <div class="icone">▣</div>
-        <h3>Calendário</h3>
-        <p>Confira as próximas reuniões, eventos e atividades da nossa Loja.</p>
-        <a href="#calendario">Ver agenda →</a>
-      </article>
-
-      <article class="atalho-card">
-        <div class="icone">●●●</div>
-        <h3>Harmonia</h3>
-        <p>Encontre informações sobre Lojas coirmãs, potências regulares e eventos em conjunto.</p>
-        <a href="#harmonia">Saiba mais →</a>
-      </article>
-    </section>
-
-    <!-- =========================================================
          CALENDÁRIO DE SESSÕES
          Datas preservadas/atualizadas com base na V1.
          ========================================================= -->
     <section id="calendario" class="secao secao-azul">
       <div class="secao-topo">
         <h2>Próximas Reuniões</h2>
-        <a
-          class="btn-calendario"
-          href="https://simiano-cyber.github.io/confirmacao-presenca-3437/"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Ver calendário completo
-        </a>
       </div>
 
-      <div class="reunioes-grid">
-        <article class="reuniao-card">
-          <strong>30 de Maio de 2026</strong>
-          <span>Sessão de Aprendiz</span>
+      <div class="reunioes-grid" data-reunioes-grid>
+        <article class="reuniao-card reuniao-card--programada">
+          <div class="reuniao-col reuniao-col--data">
+            <strong>30/05/2026</strong>
+          </div>
+          <div class="reuniao-col reuniao-col--sessao">
+            <span class="reuniao-titulo">Sessão de Aprendiz</span>
+          </div>
+          <div class="reuniao-col reuniao-col--descricao">
+            <p>Sessão ordinária de Aprendiz, com confirmação aberta para os irmãos.</p>
+          </div>
+          <div class="reuniao-col reuniao-col--confirmados">
+            <span class="reuniao-meta">Confirmações: 0</span>
+          </div>
+          <div class="reuniao-col reuniao-col--status">
+            <span class="reuniao-status">programada</span>
+          </div>
+          <div class="reuniao-col reuniao-col--fotos">
+            <div class="reuniao-fotos">
+              <span class="reuniao-foto-btn reuniao-foto-btn--vazio" aria-hidden="true">📷</span>
+            </div>
+          </div>
+          <div class="reuniao-col reuniao-col--presenca">
+            <a class="reuniao-presenca-btn" href="confirmacao/index.html">Presença</a>
+          </div>
         </article>
 
-        <article class="reuniao-card">
-          <strong>06 de Junho de 2026</strong>
-          <span>Sess∴ Mag∴ de Inst∴ e Poss∴ do V∴M∴ Solon</span>
+        <article class="reuniao-card reuniao-card--programada">
+          <div class="reuniao-col reuniao-col--data">
+            <strong>06/06/2026</strong>
+          </div>
+          <div class="reuniao-col reuniao-col--sessao">
+            <span class="reuniao-titulo">Sessão Magna de Inst∴ e Poss∴ do V∴M∴ Solon</span>
+          </div>
+          <div class="reuniao-col reuniao-col--descricao">
+            <p>Reunião especial com a cerimônia de instalação e posse.</p>
+          </div>
+          <div class="reuniao-col reuniao-col--confirmados">
+            <span class="reuniao-meta">Confirmações: 0</span>
+          </div>
+          <div class="reuniao-col reuniao-col--status">
+            <span class="reuniao-status">programada</span>
+          </div>
+          <div class="reuniao-col reuniao-col--fotos">
+            <div class="reuniao-fotos">
+              <span class="reuniao-foto-btn reuniao-foto-btn--vazio" aria-hidden="true">📷</span>
+            </div>
+          </div>
+          <div class="reuniao-col reuniao-col--presenca">
+            <a class="reuniao-presenca-btn reuniao-presenca-btn--desativado" href="confirmacao/index.html" aria-disabled="true">Presença</a>
+          </div>
         </article>
       </div>
     </section>
@@ -238,7 +241,6 @@
             <img
               src="./assets/img/vm-alexandre-amorim.png"
               alt="Ir.: Alexxandre Amorim"
-            />  
               onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
             />
             <span>AA</span>
@@ -283,9 +285,7 @@
           <h3>Confirmação</h3>
           <p>Utilize o formulário online para informar presença nas reuniões.</p>
           <a
-            href="https://simiano-cyber.github.io/confirmacao-presenca-3437/"
-            target="_blank"
-            rel="noopener noreferrer"
+            href="confirmacao/index.html"
           >
             Acessar formulário
           </a>
