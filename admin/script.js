@@ -28,6 +28,8 @@ const lojaSupabase = window.getLojaSupabaseClient?.();
 
 document.body.dataset.adminScriptLoaded = 'true';
 
+let currentAdminProfile = null;
+
 const MODULES = {
   reunioes: {
     title: 'Agenda',
@@ -144,6 +146,20 @@ const MODULES = {
     ],
     list: ['evento_data', 'evento_titulo', 'titulo', 'nome_completo', 'telefone'],
   },
+  admin_usuarios: {
+    title: 'Acessos',
+    description: 'Aprovacao, bloqueio e perfil dos usuarios administrativos.',
+    table: 'admin_usuarios',
+    order: 'created_at',
+    allowCreate: false,
+    columns: [
+      { key: 'email', label: 'E-mail', type: 'email', required: true },
+      { key: 'nome', label: 'Nome' },
+      { key: 'status', label: 'Status', type: 'select', options: ['pendente', 'aprovado', 'bloqueado'] },
+      { key: 'perfil', label: 'Perfil', type: 'select', options: ['admin', 'secretaria', 'tesouraria', 'consulta'] },
+    ],
+    list: ['email', 'nome', 'status', 'perfil'],
+  },
 };
 
 let activeModuleKey = 'reunioes';
@@ -229,9 +245,100 @@ const showLogin = () => {
   loginCard.hidden = false;
   adminDashboard.hidden = true;
   btnLogout.hidden = true;
+  loginForm.style.display = 'flex';
   loginCard.style.display = 'block';
   adminDashboard.style.display = 'none';
   btnLogout.style.display = 'none';
+};
+
+const showAccessMessage = (message, type = 'error') => {
+  loginCard.hidden = false;
+  adminDashboard.hidden = true;
+  btnLogout.hidden = false;
+  loginForm.style.display = 'none';
+  loginCard.style.display = 'block';
+  adminDashboard.style.display = 'none';
+  btnLogout.style.display = 'inline-flex';
+  setSetupStatus(message, type);
+};
+
+const isAdminPrincipal = () =>
+  currentAdminProfile?.status === 'aprovado' && currentAdminProfile?.perfil === 'admin';
+
+const syncAdminOnlyTabs = () => {
+  document.querySelectorAll('.admin-only-tab').forEach((tab) => {
+    tab.hidden = !isAdminPrincipal();
+  });
+
+  if (!isAdminPrincipal() && activeModuleKey === 'admin_usuarios') {
+    activeModuleKey = 'reunioes';
+    document.querySelectorAll('.admin-tab').forEach((tab) => tab.classList.remove('is-active'));
+    document.querySelector('[data-module="reunioes"]')?.classList.add('is-active');
+  }
+};
+
+const ensureAdminProfile = async (session) => {
+  const user = session?.user;
+  if (!user) return null;
+
+  const email = user.email || '';
+  const { data, error } = await lojaSupabase
+    .from('admin_usuarios')
+    .select('*')
+    .eq('user_id', user.id)
+    .maybeSingle();
+
+  if (error) throw error;
+  if (data) return data;
+
+  const { data: created, error: insertError } = await lojaSupabase
+    .from('admin_usuarios')
+    .insert({
+      user_id: user.id,
+      email,
+      nome: email.split('@')[0] || email,
+      status: 'pendente',
+      perfil: 'consulta',
+    })
+    .select('*')
+    .single();
+
+  if (insertError) throw insertError;
+  return created;
+};
+
+const enterApprovedAdmin = async (profile) => {
+  currentAdminProfile = profile;
+  syncAdminOnlyTabs();
+  showDashboard();
+  await loadMetrics();
+  await loadModule();
+};
+
+const handleSessionAccess = async (session) => {
+  if (!session) {
+    currentAdminProfile = null;
+    syncAdminOnlyTabs();
+    setSetupStatus('Supabase configurado. Entre com seu usuario administrativo.', 'ok');
+    showLogin();
+    return;
+  }
+
+  const profile = await ensureAdminProfile(session);
+  currentAdminProfile = profile;
+  syncAdminOnlyTabs();
+
+  if (profile?.status === 'aprovado') {
+    await enterApprovedAdmin(profile);
+    return;
+  }
+
+  if (profile?.status === 'bloqueado') {
+    showAccessMessage('Seu acesso administrativo esta bloqueado. Procure a administracao da Loja.', 'error');
+    return;
+  }
+
+  showAccessMessage('Seu acesso foi cadastrado e esta aguardando aprovacao da administracao.', 'ok');
 };
 
 const openEditor = (row = null) => {
@@ -381,7 +488,7 @@ const loadModule = async () => {
   const module = getCurrentModule();
   moduleTitle.textContent = module.title;
   moduleDescription.textContent = module.description;
-  btnNovoRegistro.hidden = Boolean(module.readonly);
+  btnNovoRegistro.hidden = Boolean(module.readonly || module.allowCreate === false);
   if (presenceFilters) {
     presenceFilters.hidden = activeModuleKey !== 'confirmacoes_presenca';
     presenceFilters.style.display = activeModuleKey === 'confirmacoes_presenca' ? 'contents' : 'none';
@@ -413,6 +520,9 @@ const saveRow = async (event) => {
 
   const module = getCurrentModule();
   const payload = buildPayload();
+  if (module.table === 'admin_usuarios' && payload.status === 'aprovado') {
+    payload.approved_at = new Date().toISOString();
+  }
   setStatus('Salvando...');
 
   try {
@@ -487,13 +597,12 @@ const initialize = async () => {
     return;
   }
 
-  const { data } = await lojaSupabase.auth.getSession();
-  if (data.session) {
-    showDashboard();
-    await loadMetrics();
-    await loadModule();
-  } else {
-    setSetupStatus('Supabase configurado. Entre com seu usuario administrativo.', 'ok');
+  try {
+    const { data } = await lojaSupabase.auth.getSession();
+    await handleSessionAccess(data.session);
+  } catch (error) {
+    console.warn(error);
+    setSetupStatus('Nao foi possivel validar o acesso administrativo. Execute o SQL supabase-admin-usuarios.sql no Supabase.', 'error');
     showLogin();
   }
 };
@@ -520,14 +629,19 @@ loginForm?.addEventListener('submit', async (event) => {
     return;
   }
 
-  setSetupStatus('Login realizado com sucesso.', 'ok');
-  showDashboard();
-  await loadMetrics();
-  await loadModule();
+  try {
+    const { data } = await lojaSupabase.auth.getSession();
+    await handleSessionAccess(data.session);
+  } catch (accessError) {
+    console.warn(accessError);
+    setSetupStatus('Login realizado, mas a validacao de acesso ainda nao esta configurada. Execute o SQL supabase-admin-usuarios.sql.', 'error');
+  }
 });
 
 btnLogout?.addEventListener('click', async () => {
   await lojaSupabase?.auth.signOut();
+  currentAdminProfile = null;
+  syncAdminOnlyTabs();
   showLogin();
 });
 
@@ -536,6 +650,12 @@ document.querySelectorAll('.admin-tab').forEach((button) => {
     document.querySelectorAll('.admin-tab').forEach((tab) => tab.classList.remove('is-active'));
     button.classList.add('is-active');
     activeModuleKey = button.dataset.module;
+    if (activeModuleKey === 'admin_usuarios' && !isAdminPrincipal()) {
+      activeModuleKey = 'reunioes';
+      syncAdminOnlyTabs();
+      setStatus('Apenas administradores principais podem gerenciar acessos.', 'error');
+      return;
+    }
     moduleSearch.value = '';
     await loadModule();
   });
