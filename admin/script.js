@@ -646,9 +646,12 @@ loginForm?.addEventListener('submit', async (event) => {
   const { error } = await lojaSupabase.auth.signInWithPassword({ email, password });
 
   if (error) {
-    const message = `Erro no login: ${error.message}`;
+    const isEmailNotConfirmed = String(error.message || '').toLowerCase().includes('email not confirmed');
+    const message = isEmailNotConfirmed
+      ? 'Erro no login: e-mail ainda nao confirmado. Confirme o e-mail recebido antes de entrar.'
+      : `Erro no login: ${error.message}`;
     setSetupStatus(message, 'error');
-    alert(`${message}\n\nConfira se o usuario existe em Authentication > Users e se esta confirmado.`);
+    alert(`${message}\n\nA aprovacao administrativa e separada da confirmacao de e-mail do Supabase.`);
     return;
   }
 

@@ -75,6 +75,44 @@ to authenticated
 using (public.is_admin_aprovado())
 with check (public.is_admin_aprovado());
 
+create or replace function public.criar_admin_usuario_pendente()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  insert into public.admin_usuarios (user_id, email, nome, status, perfil)
+  values (
+    new.id,
+    new.email,
+    coalesce(new.raw_user_meta_data->>'name', split_part(new.email, '@', 1)),
+    'pendente',
+    'consulta'
+  )
+  on conflict (user_id) do nothing;
+
+  return new;
+end;
+$$;
+
+drop trigger if exists on_auth_user_created_admin_access on auth.users;
+
+create trigger on_auth_user_created_admin_access
+after insert on auth.users
+for each row execute function public.criar_admin_usuario_pendente();
+
+insert into public.admin_usuarios (user_id, email, nome, status, perfil)
+select
+  id,
+  email,
+  coalesce(raw_user_meta_data->>'name', split_part(email, '@', 1)),
+  'pendente',
+  'consulta'
+from auth.users
+where email is not null
+on conflict (user_id) do nothing;
+
 drop policy if exists "Usuarios autenticados gerenciam obreiros" on public.obreiros;
 drop policy if exists "Usuarios autenticados gerenciam reunioes" on public.reunioes;
 drop policy if exists "Usuarios autenticados leem confirmacoes" on public.confirmacoes_presenca;
