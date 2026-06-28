@@ -3,159 +3,109 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Área administrativa da Loja Tradição e Progresso 3437." />
-  <title>Admin - Tradição e Progresso 3437</title>
+  <meta name="description" content="Ambiente de gestao da Loja Tradicao e Progresso 3437." />
+  <title>Gestao da Loja - Tradicao e Progresso 3437</title>
   <link rel="stylesheet" href="../style.css" />
 </head>
 <body class="admin-page">
   <main class="admin-shell">
     <section class="admin-header">
       <div>
-        <span class="pre-titulo">Área restrita</span>
-        <h1>Administração da Agenda</h1>
+        <span class="pre-titulo">Ambiente restrito</span>
+        <h1>Gestao da Loja</h1>
         <p>
-          Cadastre reuniões, ajuste fotos e mantenha a agenda local sincronizada com a home e com a confirmação.
+          Portal administrativo integrado ao Supabase para Secretaria, Tesouraria, Galerias e Agenda.
         </p>
       </div>
       <div class="admin-header-actions">
         <a class="confirmacao-link admin-home-link" href="../index.html">Voltar ao site</a>
+        <button type="button" class="confirmacao-button admin-secondary" id="btnLogout" hidden>Sair</button>
       </div>
     </section>
 
     <section class="admin-login-card" id="adminLoginCard">
-      <h2>Acesso</h2>
-      <p>Use o acesso local para editar a agenda durante os testes.</p>
-
+      <h2>Acesso Supabase</h2>
+      <p>Entre com o usuario criado em Authentication no Supabase.</p>
       <form id="adminLoginForm" class="admin-login-form">
-      <input id="adminUser" type="text" placeholder="Usuário" autocomplete="username" required />
-      <input id="adminPassword" type="password" placeholder="Senha" autocomplete="current-password" required />
+        <input id="adminEmail" type="email" placeholder="E-mail" autocomplete="username" required />
+        <input id="adminPassword" type="password" placeholder="Senha" autocomplete="current-password" required />
         <button type="submit" class="confirmacao-button">Entrar</button>
       </form>
+      <p class="admin-help" id="setupStatus"></p>
     </section>
 
-    <section class="admin-dashboard" id="adminDashboard" hidden>
-      <section class="admin-metrics" aria-label="Resumo da agenda">
+    <section class="admin-dashboard admin-portal" id="adminDashboard" hidden>
+      <section class="admin-metrics" aria-label="Resumo da plataforma">
         <article class="admin-metric-card">
-          <span class="admin-metric-label">Total de reuniões</span>
-          <strong id="metricTotal">0</strong>
+          <span class="admin-metric-label">Obreiros</span>
+          <strong id="metricObreiros">0</strong>
         </article>
         <article class="admin-metric-card">
-          <span class="admin-metric-label">Programadas</span>
-          <strong id="metricProgramadas">0</strong>
+          <span class="admin-metric-label">Reunioes</span>
+          <strong id="metricReunioes">0</strong>
         </article>
         <article class="admin-metric-card">
-          <span class="admin-metric-label">Realizadas</span>
-          <strong id="metricRealizadas">0</strong>
+          <span class="admin-metric-label">Pagamentos pendentes</span>
+          <strong id="metricPendentes">0</strong>
         </article>
         <article class="admin-metric-card">
-          <span class="admin-metric-label">Com fotos</span>
-          <strong id="metricFotos">0</strong>
+          <span class="admin-metric-label">Confirmacoes</span>
+          <strong id="metricConfirmacoes">0</strong>
         </article>
       </section>
 
-      <div class="admin-toolbar">
-        <button type="button" class="confirmacao-button" id="btnNovo">Criar agenda</button>
-        <label class="admin-search">
-          <span>Filtrar agenda</span>
-          <input type="search" id="agendaFiltro" placeholder="Data, título, status ou descrição" />
-        </label>
-      </div>
+      <nav class="admin-tabs" aria-label="Modulos administrativos">
+        <button type="button" class="admin-tab is-active" data-module="reunioes">Agenda</button>
+        <button type="button" class="admin-tab" data-module="obreiros">Obreiros</button>
+        <button type="button" class="admin-tab" data-module="datas_importantes">Secretaria</button>
+        <button type="button" class="admin-tab" data-module="atas">Atas</button>
+        <button type="button" class="admin-tab" data-module="pagamentos">Tesouraria</button>
+        <button type="button" class="admin-tab" data-module="galeria">Galerias</button>
+        <button type="button" class="admin-tab" data-module="confirmacoes_presenca">Presencas</button>
+      </nav>
 
-      <section class="admin-panel">
+      <section class="admin-panel admin-module-panel">
         <div class="admin-panel-header">
-          <h2>Reuniões</h2>
-          <label class="admin-import">
-            Importar JSON
-            <input type="file" id="importFile" accept=".json,application/json" />
+          <div>
+            <h2 id="moduleTitle">Agenda</h2>
+            <p class="admin-help" id="moduleDescription">Cadastro das reunioes exibidas no site e na confirmacao.</p>
+          </div>
+          <div class="admin-inline-actions">
+            <button type="button" class="confirmacao-button" id="btnNovoRegistro">Novo registro</button>
+            <button type="button" class="confirmacao-button admin-secondary" id="btnRecarregar">Recarregar</button>
+          </div>
+        </div>
+
+        <div class="admin-toolbar">
+          <label class="admin-search">
+            <span>Buscar</span>
+            <input type="search" id="moduleSearch" placeholder="Digite para filtrar" />
           </label>
+          <span class="admin-sync-status" id="syncStatus">Supabase conectado</span>
         </div>
 
         <div class="admin-table-wrap">
-          <table class="agenda-table">
-            <thead>
-              <tr>
-                <th>Data</th>
-                <th>Título</th>
-                <th>Descrição</th>
-                <th>Status</th>
-                <th>Confirmados</th>
-                <th>Fotos</th>
-                <th>Ações</th>
-              </tr>
-            </thead>
-            <tbody id="agendaList"></tbody>
+          <table class="agenda-table admin-data-table">
+            <thead id="moduleTableHead"></thead>
+            <tbody id="moduleTableBody"></tbody>
           </table>
         </div>
       </section>
 
       <div class="admin-modal" id="editorModal" hidden>
-        <section class="admin-panel admin-editor-card" id="editorCard" role="dialog" aria-modal="true" aria-labelledby="editorTitle">
+        <section class="admin-panel admin-editor-card" role="dialog" aria-modal="true" aria-labelledby="editorTitle">
           <div class="admin-panel-header">
-            <h2 id="editorTitle">Editor da sessão</h2>
-            <button type="button" class="admin-close" id="btnFecharEditor" aria-label="Fechar editor">×</button>
+            <h2 id="editorTitle">Registro</h2>
+            <button type="button" class="admin-close" id="btnFecharEditor" aria-label="Fechar editor">x</button>
           </div>
-          <form id="agendaForm" class="agenda-form">
-            <input type="hidden" id="agendaIndex" value="" />
-            <input type="date" id="agendaData" required />
-            <select id="agendaTituloPadrao" required>
-              <option value="" disabled selected>Selecione o tipo de sessão</option>
-              <option value="Sess∴ Mag∴ de Inic∴">Sess∴ Mag∴ de Inic∴</option>
-              <option value="Sess∴ Mag∴ de Elev∴">Sess∴ Mag∴ de Elev∴</option>
-              <option value="Sess∴ Mag∴ de Exalt∴">Sess∴ Mag∴ de Exalt∴</option>
-              <option value="Sess∴ Mag∴ de Inst∴ e Poss∴">Sess∴ Mag∴ de Inst∴ e Poss∴</option>
-              <option value="Loj∴ de Mes∴">Loj∴ de Mes∴</option>
-              <option value="Banq∴ Rit∴">Banq∴ Rit∴</option>
-              <option value="Sess∴ Sol∴">Sess∴ Sol∴</option>
-              <option value="Sess∴ Br∴">Sess∴ Br∴</option>
-              <option value="Sess∴ Res∴">Sess∴ Res∴</option>
-              <option value="Sess∴ no Gr∴ de Apr∴">Sess∴ no Gr∴ de Apr∴</option>
-              <option value="Sess∴ no Gr∴ de Comp∴">Sess∴ no Gr∴ de Comp∴</option>
-              <option value="Sess∴ no Gr∴ de Mest∴">Sess∴ no Gr∴ de Mest∴</option>
-              <option value="__custom__">Outro título</option>
-            </select>
-            <input type="text" id="agendaTituloCustom" placeholder="Digite o título personalizado" hidden />
-            <textarea id="agendaDescricao" rows="4" placeholder="Descrição"></textarea>
-            <select id="agendaStatus">
-              <option value="programada">Programada</option>
-              <option value="realizada">Realizada</option>
-              <option value="cancelada">Cancelada</option>
-            </select>
-            <textarea id="agendaFotos" rows="3" placeholder="URLs das fotos, uma por linha ou separadas por |"></textarea>
-
-            <div class="admin-form-actions">
-              <button type="submit" class="confirmacao-button" id="btnSalvarAgenda">Cadastrar sessão</button>
-              <button type="button" class="confirmacao-button admin-secondary" id="btnCancelarEdicao">Cancelar edição</button>
-            </div>
-          </form>
+          <form id="moduleForm" class="agenda-form admin-dynamic-form"></form>
         </section>
       </div>
-
-      <details class="admin-technical">
-        <summary class="admin-technical-summary">Aba técnica</summary>
-        <section class="admin-panel admin-technical-panel">
-          <div class="admin-panel-header">
-            <h2>Configuração de sincronização</h2>
-          </div>
-          <div class="admin-inline-actions">
-            <button type="button" class="confirmacao-button admin-secondary" id="btnSalvarLocal">Salvar localmente</button>
-            <button type="button" class="confirmacao-button admin-secondary" id="btnExportar">Exportar JSON</button>
-            <button type="button" class="confirmacao-button admin-secondary" id="btnSincronizar">Sincronizar Apps Script</button>
-          </div>
-          <input
-            type="url"
-            id="appsScriptUrl"
-            class="admin-wide-input"
-            placeholder="URL do Apps Script para sincronizar com a planilha"
-          />
-          <p class="admin-help">
-            Se a URL estiver preenchida, o botão de sincronização envia as reuniões para a aba <code>reuniao</code>.
-          </p>
-          <textarea id="agendaJsonPreview" class="admin-json-preview" rows="12" readonly></textarea>
-        </section>
-      </details>
     </section>
   </main>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../supabase-config.js"></script>
   <script src="script.js"></script>
 </body>
 </html>

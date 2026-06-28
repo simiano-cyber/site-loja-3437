@@ -692,16 +692,16 @@ a {
     background: #fffdf8;
     border: 1px solid #ded5c7;
     border-radius: 10px;
-    padding: 16px;
+    padding: 4px 16px;
     box-shadow: var(--sombra);
 }
 
 .foto-vm {
-    width: 104px;
-    height: 104px;
+    width: 136px;
+    height: 136px;
     border-radius: 50%;
     overflow: hidden;
-    margin: 0 auto 18px;
+    margin: 0 auto 10px;
     background: linear-gradient(135deg, var(--dourado), var(--dourado-2));
     border: 3px solid var(--dourado);
 }
@@ -1488,6 +1488,117 @@ a {
 
 .admin-technical-panel {
     margin: 0;
+}
+
+.admin-header-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.admin-portal {
+    display: grid;
+    gap: 14px;
+}
+
+.admin-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    background: #fffdf8;
+    border: 1px solid #ded5c7;
+    border-radius: 16px;
+    padding: 10px;
+    box-shadow: 0 16px 44px rgba(9, 19, 64, .08);
+}
+
+.admin-tab {
+    border: 1px solid #d8e2f0;
+    background: #fff;
+    color: #20365f;
+    border-radius: 12px;
+    padding: 10px 14px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.admin-tab.is-active,
+.admin-tab:hover {
+    background: #151b5d;
+    color: #fff;
+    border-color: #151b5d;
+}
+
+.admin-module-panel {
+    margin-top: 0;
+}
+
+.admin-sync-status {
+    align-self: end;
+    display: inline-flex;
+    min-height: 42px;
+    align-items: center;
+    border-radius: 12px;
+    padding: 0 14px;
+    border: 1px solid #d8e2f0;
+    background: #f8fbff;
+    color: #20365f;
+    font-weight: 700;
+}
+
+.admin-sync-status[data-type="ok"] {
+    border-color: rgba(22, 163, 74, .3);
+    background: #f0fdf4;
+    color: #166534;
+}
+
+.admin-sync-status[data-type="error"] {
+    border-color: rgba(220, 38, 38, .3);
+    background: #fff5f5;
+    color: #b91c1c;
+}
+
+.admin-data-table {
+    min-width: 980px;
+}
+
+.admin-dynamic-form {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.admin-field {
+    display: grid;
+    gap: 6px;
+}
+
+.admin-field span {
+    color: #5b667f;
+    font-size: .76rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+}
+
+.admin-field small {
+    color: #667085;
+}
+
+.admin-field textarea,
+.admin-field select,
+.admin-field input {
+    width: 100%;
+    border-radius: 10px;
+    border: 1px solid #d8c9a8;
+    background: #fff;
+    padding: 11px 12px;
+    font: inherit;
+}
+
+.admin-field textarea,
+.admin-form-actions {
+    grid-column: 1 / -1;
 }
 
 @media (max-width: 900px) {

@@ -1,23 +1,32 @@
-﻿/* =========================================================
-   SCRIPT PRINCIPAL - SITE INSTITUCIONAL 3437
-   ---------------------------------------------------------
-   Controla o menu mobile e popula o calendário a partir de
-   um arquivo de dados centralizado.
-   ========================================================= */
-
 const menuToggle = document.querySelector('.menu-toggle');
 const menu = document.querySelector('.menu');
 const reunioesGrid = document.querySelector('[data-reunioes-grid]');
-const agendaEndpoint =
-  'https://script.google.com/macros/s/AKfycbzJqBotGpzkooB01roAMtHHg_a-NWtzi_Dnz2qcNW26y8FPxWva7Bs4dXTU2t7UOt9V/exec?action=agenda';
+
+const seedReunioes = [
+  {
+    id: 'seed-2026-05-30',
+    data: '2026-05-30',
+    titulo: 'Sessao de Aprendiz',
+    descricao: 'Sessao ordinaria de Aprendiz, com confirmacao aberta para os irmaos.',
+    status: 'programada',
+    confirmados: 0,
+    fotos: [],
+  },
+  {
+    id: 'seed-2026-06-06',
+    data: '2026-06-06',
+    titulo: 'Sessao Magna de Instalacao e Posse',
+    descricao: 'Reuniao especial com a cerimonia de instalacao e posse.',
+    status: 'programada',
+    confirmados: 0,
+    fotos: [],
+  },
+];
 
 const formatarData = (valor) => {
-  if (!valor) {
-    return '';
-  }
+  if (!valor) return '';
 
   const data = new Date(`${valor}T12:00:00`);
-
   return new Intl.DateTimeFormat('pt-BR', {
     day: '2-digit',
     month: '2-digit',
@@ -44,13 +53,17 @@ const cameraIconeHTML = `
   </svg>
 `;
 
-const criarCardReuniao = (reuniao) => {
+const normalizarReuniao = (reuniao) => ({
+  ...reuniao,
+  confirmados: Number(reuniao.confirmados || reuniao.confirmacoes_count || 0),
+  fotos: Array.isArray(reuniao.fotos) ? reuniao.fotos : [],
+});
+
+const criarCardReuniao = (reuniaoOriginal) => {
+  const reuniao = normalizarReuniao(reuniaoOriginal);
   const status = reuniao.status || 'programada';
   const statusNormalizado = String(status).toLowerCase();
-  const fotos = Array.isArray(reuniao.fotos) ? reuniao.fotos.slice(0, 2) : [];
-  const confirmados = Number.isFinite(Number(reuniao.confirmados))
-    ? Number(reuniao.confirmados)
-    : null;
+  const fotos = reuniao.fotos.slice(0, 2);
 
   const fotosHTML = fotos.length
     ? `
@@ -60,8 +73,8 @@ const criarCardReuniao = (reuniao) => {
           href="${sanitizarTexto(fotos[0])}"
           target="_blank"
           rel="noopener noreferrer"
-          aria-label="Abrir foto da sessão ${sanitizarTexto(reuniao.titulo)}"
-          title="Abrir foto da sessão"
+          aria-label="Abrir foto da sessao ${sanitizarTexto(reuniao.titulo)}"
+          title="Abrir foto da sessao"
         >
           ${cameraIconeHTML}
         </a>
@@ -80,25 +93,21 @@ const criarCardReuniao = (reuniao) => {
       <span
         class="reuniao-presenca-btn reuniao-presenca-btn--desativado"
         aria-disabled="true"
-        title="Presença encerrada para sessões realizadas"
+        title="Presenca encerrada para sessoes realizadas"
       >
-        Presença
+        Presenca
       </span>
     `
     : `
       <a
         class="reuniao-presenca-btn"
         href="confirmacao/index.html"
-        aria-label="Confirmar presença na sessão ${sanitizarTexto(reuniao.titulo)}"
-        title="Confirmar presença"
+        aria-label="Confirmar presenca na sessao ${sanitizarTexto(reuniao.titulo)}"
+        title="Confirmar presenca"
       >
-        Presença
+        Presenca
       </a>
     `;
-
-  const confirmadosHTML = confirmados === null
-    ? '<span class="reuniao-meta">Confirmações: em atualização</span>'
-    : `<span class="reuniao-meta">Confirmações: ${confirmados}</span>`;
 
   return `
     <article class="reuniao-card reuniao-card--${sanitizarTexto(status)}">
@@ -112,7 +121,7 @@ const criarCardReuniao = (reuniao) => {
         <p>${sanitizarTexto(reuniao.descricao || '')}</p>
       </div>
       <div class="reuniao-col reuniao-col--confirmados">
-        ${confirmadosHTML}
+        <span class="reuniao-meta">Confirmacoes: ${Number(reuniao.confirmados || 0)}</span>
       </div>
       <div class="reuniao-col reuniao-col--status">
         <span class="reuniao-status">${sanitizarTexto(status)}</span>
@@ -128,27 +137,34 @@ const criarCardReuniao = (reuniao) => {
 };
 
 const carregarReunioes = async () => {
-  if (!reunioesGrid) {
+  if (!reunioesGrid) return;
+
+  const supabase = window.getLojaSupabaseClient?.();
+
+  if (!supabase) {
+    reunioesGrid.innerHTML = ordenarPorData(seedReunioes).map(criarCardReuniao).join('');
     return;
   }
 
   try {
-    const resposta = await fetch(agendaEndpoint, { cache: 'no-store' });
-    if (!resposta.ok) {
-      throw new Error('Falha ao carregar as reuniões.');
-    }
+    const { data, error } = await supabase
+      .from('reunioes')
+      .select('id,data,titulo,descricao,status,fotos,confirmacoes_presenca(count)')
+      .order('data', { ascending: true });
 
-    const reunioes = await resposta.json();
-    if (!Array.isArray(reunioes) || !reunioes.length) {
-      reunioesGrid.innerHTML = '<p class="reunioes-vazio">Nenhuma reunião cadastrada na planilha.</p>';
-      return;
-    }
+    if (error) throw error;
 
-    reunioesGrid.innerHTML = ordenarPorData(reunioes).map(criarCardReuniao).join('');
-    return;
+    const reunioes = (data || []).map((reuniao) => ({
+      ...reuniao,
+      confirmados: reuniao.confirmacoes_presenca?.[0]?.count || 0,
+    }));
+
+    reunioesGrid.innerHTML = reunioes.length
+      ? reunioes.map(criarCardReuniao).join('')
+      : '<p class="reunioes-vazio">Nenhuma reuniao cadastrada.</p>';
   } catch (erro) {
-    console.warn('Não foi possível ler a agenda na planilha.', erro);
-    reunioesGrid.innerHTML = '<p class="reunioes-vazio">Agenda indisponível no momento.</p>';
+    console.warn('Nao foi possivel ler a agenda no Supabase.', erro);
+    reunioesGrid.innerHTML = '<p class="reunioes-vazio">Agenda indisponivel no momento.</p>';
   }
 };
 
@@ -167,5 +183,3 @@ if (menuToggle && menu) {
 }
 
 carregarReunioes();
-
-console.log('Site institucional da Loja 3437 - V3 carregado com sucesso.');

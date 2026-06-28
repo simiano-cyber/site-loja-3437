@@ -1,56 +1,66 @@
-# A.R.L.S. Tradição e Progresso 3437
+# A.R.L.S. Tradicao e Progresso 3437
 
-Site institucional da Loja Tradição e Progresso 3437, com visual responsivo, calendário de reuniões e página local de confirmação de presença.
+Plataforma web da Loja Tradicao e Progresso 3437, com area institucional publica e ambiente de gestao conectado ao Supabase.
 
-## Estrutura atual
+## Estrutura
 
 ```text
 site-loja-3437-main/
 ├── index.html
 ├── script.js
 ├── style.css
-├── README.md
-├── data/
-│   └── reunioes.json
+├── supabase-config.js
+├── supabase-schema.sql
 ├── confirmacao/
 │   ├── index.html
 │   └── script.js
 ├── admin/
 │   ├── index.html
 │   └── script.js
-├── apps-script/
-│   ├── Code.gs
-│   └── README.md
 ├── comparecimento/
 │   └── index.html
 └── assets/
-    └── img/
-        ├── logo-gob.png
-        ├── logo-gobsp.png
-        ├── logo-loja.png
-        ├── vm-alexandre-amorim.png
-        └── vm-jose-solon.png
 ```
 
-## O que já está integrado
+## Base oficial
 
-- A home carrega as próximas reuniões a partir de `data/reunioes.json`.
-- A home tenta primeiro a agenda remota do Apps Script e usa `data/reunioes.json` como fallback.
-- O link de confirmação agora aponta para `/confirmacao/`.
-- A página `/confirmacao/` envia os dados para o mesmo Apps Script já usado hoje.
-- O formulário já grava em Google Sheets e continua compatível com o fluxo atual.
-- A área `/admin/` permite editar a agenda localmente, importar/exportar JSON e sincronizar com o Apps Script quando houver uma URL configurada.
-- No teste local, a agenda salva no admin fica em `localStorage`, e a home e a confirmação leem esse valor antes do fallback em arquivo.
-- O arquivo `comparecimento/index.html` permanece como redirecionamento legado para `/confirmacao/`.
-- O diretório `apps-script/` contém o código de referência para a integração com a planilha.
+O sistema agora foi preparado para usar Supabase como fonte principal dos dados.
 
-## Próximos passos
+- A home le a agenda na tabela `reunioes`.
+- A confirmacao de presenca grava na tabela `confirmacoes_presenca`.
+- O Admin usa login do Supabase Auth.
+- O Admin gerencia Agenda, Obreiros, Secretaria, Atas, Tesouraria, Galerias e Presencas.
 
-- Criar a área administrativa para cadastrar reuniões.
-- Permitir atualizar a agenda sem editar HTML.
-- Associar fotos de 1 ou 2 imagens por reunião.
-- Conectar a contagem de confirmações por reunião ao Google Sheets.
+## Como configurar
 
-## Observação
+1. Crie um projeto no Supabase.
+2. Abra o SQL Editor e execute o conteudo de `supabase-schema.sql`.
+3. Em Authentication, crie o usuario administrativo.
+4. Em Project Settings > API, copie:
+   - Project URL
+   - anon public key
+5. Preencha `supabase-config.js`:
 
-As fotos podem continuar no próprio repositório do GitHub, porque o upload ocorre depois da reunião e isso simplifica a operação neste momento.
+```js
+window.LOJA_SUPABASE = {
+  url: 'https://seu-projeto.supabase.co',
+  anonKey: 'sua-chave-anon-public',
+};
+```
+
+## Modulos iniciais
+
+- `obreiros`: cadastro central da Loja.
+- `reunioes`: agenda exibida no site e no formulario de presenca.
+- `confirmacoes_presenca`: registros enviados pelos visitantes.
+- `datas_importantes`: aniversariantes e datas comemorativas.
+- `atas`: atas de reuniao com modelo estruturado.
+- `pagamentos`: gestao dos pagantes.
+- `galeria`: fundadores, veneraveis e obreiros.
+
+## Proximos passos recomendados
+
+- Criar os primeiros usuarios administrativos no Supabase Auth.
+- Importar os dados antigos da planilha para as tabelas novas.
+- Configurar Storage para fotos de galeria e documentos.
+- Evoluir permissoes por perfil: admin, secretaria e tesouraria.

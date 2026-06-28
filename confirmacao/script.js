@@ -1,8 +1,3 @@
-const APPS_SCRIPT_URL =
-  'https://script.google.com/macros/s/AKfycbzJqBotGpzkooB01roAMtHHg_a-NWtzi_Dnz2qcNW26y8FPxWva7Bs4dXTU2t7UOt9V/exec';
-
-const agendaEndpoint = `${APPS_SCRIPT_URL}?action=agenda`;
-
 const eventoSelect = document.getElementById('evento');
 const form = document.getElementById('formConfirmacao');
 const telefone = document.getElementById('telefone');
@@ -12,9 +7,7 @@ const mensagemConfirmacao = document.getElementById('mensagemConfirmacao');
 const fecharModal = document.getElementById('fecharModal');
 
 const formatarData = (valor) => {
-  if (!valor) {
-    return '';
-  }
+  if (!valor) return '';
 
   const data = new Date(`${valor}T12:00:00`);
   return new Intl.DateTimeFormat('pt-BR', {
@@ -31,9 +24,7 @@ const escaparHTML = (texto) => {
 };
 
 const preencherEventos = (agenda) => {
-  if (!eventoSelect) {
-    return false;
-  }
+  if (!eventoSelect) return false;
 
   eventoSelect.innerHTML = '';
 
@@ -48,19 +39,19 @@ const preencherEventos = (agenda) => {
     const vazio = document.createElement('option');
     vazio.value = '';
     vazio.disabled = true;
-    vazio.textContent = 'Nenhuma sessão cadastrada na planilha';
+    vazio.textContent = 'Nenhuma sessao cadastrada';
     eventoSelect.appendChild(vazio);
     return false;
   }
 
   agenda.forEach((reuniao) => {
-    const data = String(reuniao.data || reuniao.id || '').slice(0, 10);
     const option = document.createElement('option');
-    option.value = data;
-    option.textContent = `${formatarData(data)} - ${reuniao.titulo || ''}`;
-    option.dataset.data = data;
+    option.value = reuniao.id;
+    option.textContent = `${formatarData(reuniao.data)} - ${reuniao.titulo || ''}`;
+    option.dataset.id = reuniao.id;
+    option.dataset.data = reuniao.data || '';
     option.dataset.eventoTitulo = reuniao.titulo || '';
-    option.dataset.label = reuniao.titulo || '';
+    option.dataset.label = option.textContent;
     eventoSelect.appendChild(option);
   });
 
@@ -68,20 +59,26 @@ const preencherEventos = (agenda) => {
 };
 
 const carregarEventos = async () => {
-  if (!eventoSelect) {
+  if (!eventoSelect) return;
+
+  const supabase = window.getLojaSupabaseClient?.();
+
+  if (!supabase) {
+    preencherEventos([]);
     return;
   }
 
   try {
-    const resposta = await fetch(agendaEndpoint, { cache: 'no-store' });
-    if (!resposta.ok) {
-      throw new Error('Falha ao carregar a agenda.');
-    }
+    const { data, error } = await supabase
+      .from('reunioes')
+      .select('id,data,titulo,status')
+      .neq('status', 'realizada')
+      .order('data', { ascending: true });
 
-    const reunioes = await resposta.json();
-    preencherEventos(reunioes);
+    if (error) throw error;
+    preencherEventos(data || []);
   } catch (erro) {
-    console.warn('Não foi possível ler a agenda na planilha.', erro);
+    console.warn('Nao foi possivel ler a agenda no Supabase.', erro);
     preencherEventos([]);
   }
 };
@@ -98,10 +95,17 @@ telefone?.addEventListener('input', (evento) => {
 form?.addEventListener('submit', async (evento) => {
   evento.preventDefault();
 
+  const supabase = window.getLojaSupabaseClient?.();
+
+  if (!supabase) {
+    alert('Supabase ainda nao configurado. Preencha o arquivo supabase-config.js.');
+    return;
+  }
+
   const eventoOption = eventoSelect?.selectedOptions?.[0];
-  const eventoData = eventoOption?.dataset?.data || eventoSelect?.value || '';
-  const eventoTitulo = eventoOption?.dataset?.eventoTitulo || eventoOption?.dataset?.label || '';
-  const eventoLabel = eventoOption?.textContent || '';
+  const eventoData = eventoOption?.dataset?.data || '';
+  const eventoTitulo = eventoOption?.dataset?.eventoTitulo || '';
+  const eventoLabel = eventoOption?.dataset?.label || eventoOption?.textContent || '';
   const potencia = document.getElementById('potencia').value;
   const tituloIrmao = document.getElementById('titulo').value;
   const nomeIrmao = document.getElementById('nome').value.trim();
@@ -111,16 +115,16 @@ form?.addEventListener('submit', async (evento) => {
   const nomeCompleto = `${tituloIrmao} ${nomeIrmao}`.trim();
 
   const dados = {
-    evento: eventoLabel,
-    eventoData,
-    eventoTitulo,
-    eventoLabel,
+    reuniao_id: eventoOption?.dataset?.id || null,
+    evento_data: eventoData || null,
+    evento_titulo: eventoTitulo,
+    evento_label: eventoLabel,
     potencia,
     titulo: tituloIrmao,
     nome: nomeIrmao,
-    nomeCompleto,
-    numeroLoja,
-    nomeLoja,
+    nome_completo: nomeCompleto,
+    numero_loja: numeroLoja,
+    nome_loja: nomeLoja,
     telefone: telefoneIrmao,
   };
 
@@ -128,30 +132,26 @@ form?.addEventListener('submit', async (evento) => {
     botaoEnviar.disabled = true;
     botaoEnviar.innerText = 'Enviando...';
 
-    await fetch(APPS_SCRIPT_URL, {
-      method: 'POST',
-      body: JSON.stringify(dados),
-    });
-
-    const nomeCompletoSeguro = escaparHTML(nomeCompleto);
-    const eventoLabelSeguro = escaparHTML(eventoLabel);
+    const { error } = await supabase.from('confirmacoes_presenca').insert(dados);
+    if (error) throw error;
 
     mensagemConfirmacao.innerHTML =
-      `Confirmação enviada com sucesso!<br><br>` +
-      `Aguardamos o Ir∴ <strong>${nomeCompletoSeguro}</strong><br>` +
-      `para a reunião:<br><br>` +
-      `<strong>${eventoLabelSeguro}</strong><br><br>` +
-      `Local da Sess∴:<br>` +
-      `Rua Segundo Tenente Aluisio de Faria, Nº 193<br>` +
-      `Jardim Santa Mena – Guarulhos – SP`;
+      `Confirmacao enviada com sucesso!<br><br>` +
+      `Aguardamos o Ir. <strong>${escaparHTML(nomeCompleto)}</strong><br>` +
+      `para a reuniao:<br><br>` +
+      `<strong>${escaparHTML(eventoLabel)}</strong><br><br>` +
+      `Local da Sess.:<br>` +
+      `Rua Segundo Tenente Aluisio de Faria, No 193<br>` +
+      `Jardim Santa Mena - Guarulhos - SP`;
 
     modal.style.display = 'flex';
     form.reset();
   } catch (erro) {
-    alert('Não foi possível enviar a confirmação. Verifique sua conexão ou o Apps Script.');
+    console.warn(erro);
+    alert('Nao foi possivel enviar a confirmacao. Verifique sua conexao ou a configuracao do Supabase.');
   } finally {
     botaoEnviar.disabled = false;
-    botaoEnviar.innerText = 'Enviar Confirmação';
+    botaoEnviar.innerText = 'Enviar Confirmacao';
   }
 });
 
