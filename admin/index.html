@@ -32,7 +32,7 @@
         <input id="adminPassword" type="password" placeholder="Senha" autocomplete="current-password" required />
         <button type="submit" class="confirmacao-button">Entrar</button>
       </form>
-      <p class="admin-help" id="setupStatus"></p>
+      <p class="admin-help" id="setupStatus">Carregando integracao com o Supabase...</p>
     </section>
 
     <section class="admin-dashboard admin-portal" id="adminDashboard" hidden>
@@ -107,6 +107,17 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="../supabase-config.js?v=20260628-supabase"></script>
-  <script src="script.js?v=20260628-login-debug"></script>
+  <script>
+    window.addEventListener('load', function () {
+      window.setTimeout(function () {
+        var status = document.getElementById('setupStatus');
+        if (!document.body.dataset.adminScriptLoaded && status) {
+          status.textContent = 'O script do Admin nao carregou. Atualize com Ctrl + F5 ou teste em aba anonima.';
+          status.dataset.type = 'error';
+        }
+      }, 1200);
+    });
+  </script>
+  <script src="script.js?v=20260628-login-debug-2"></script>
 </body>
 </html>
