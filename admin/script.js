@@ -187,12 +187,18 @@ const showDashboard = () => {
   loginCard.hidden = true;
   adminDashboard.hidden = false;
   btnLogout.hidden = false;
+  loginCard.style.display = 'none';
+  adminDashboard.style.display = 'grid';
+  btnLogout.style.display = 'inline-flex';
 };
 
 const showLogin = () => {
   loginCard.hidden = false;
   adminDashboard.hidden = true;
   btnLogout.hidden = true;
+  loginCard.style.display = 'block';
+  adminDashboard.style.display = 'none';
+  btnLogout.style.display = 'none';
 };
 
 const openEditor = (row = null) => {
