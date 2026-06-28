@@ -6,6 +6,12 @@ const modal = document.getElementById('modalConfirmacao');
 const mensagemConfirmacao = document.getElementById('mensagemConfirmacao');
 const fecharModal = document.getElementById('fecharModal');
 
+const setBotaoEnviar = (habilitado) => {
+  if (!botaoEnviar) return;
+  botaoEnviar.disabled = !habilitado;
+  botaoEnviar.title = habilitado ? '' : 'Selecione uma reuniao disponivel para confirmar presenca.';
+};
+
 const formatarData = (valor) => {
   if (!valor) return '';
 
@@ -41,6 +47,7 @@ const preencherEventos = (agenda) => {
     vazio.disabled = true;
     vazio.textContent = 'Nenhuma sessao cadastrada';
     eventoSelect.appendChild(vazio);
+    setBotaoEnviar(false);
     return false;
   }
 
@@ -55,24 +62,26 @@ const preencherEventos = (agenda) => {
     eventoSelect.appendChild(option);
   });
 
+  setBotaoEnviar(true);
   return true;
 };
 
 const carregarEventos = async () => {
   if (!eventoSelect) return;
 
-  const supabase = window.getLojaSupabaseClient?.();
+  const lojaSupabase = window.getLojaSupabaseClient?.();
 
-  if (!supabase) {
+  if (!lojaSupabase) {
     preencherEventos([]);
     return;
   }
 
   try {
-    const { data, error } = await supabase
+    const { data, error } = await lojaSupabase
       .from('reunioes')
       .select('id,data,titulo,status')
       .neq('status', 'realizada')
+      .neq('status', 'cancelada')
       .order('data', { ascending: true });
 
     if (error) throw error;
@@ -95,9 +104,9 @@ telefone?.addEventListener('input', (evento) => {
 form?.addEventListener('submit', async (evento) => {
   evento.preventDefault();
 
-  const supabase = window.getLojaSupabaseClient?.();
+  const lojaSupabase = window.getLojaSupabaseClient?.();
 
-  if (!supabase) {
+  if (!lojaSupabase) {
     alert('Supabase ainda nao configurado. Preencha o arquivo supabase-config.js.');
     return;
   }
@@ -106,17 +115,24 @@ form?.addEventListener('submit', async (evento) => {
   const eventoData = eventoOption?.dataset?.data || '';
   const eventoTitulo = eventoOption?.dataset?.eventoTitulo || '';
   const eventoLabel = eventoOption?.dataset?.label || eventoOption?.textContent || '';
-  const potencia = document.getElementById('potencia').value;
-  const tituloIrmao = document.getElementById('titulo').value;
+  const reuniaoId = eventoOption?.dataset?.id || null;
+  const potencia = document.getElementById('potencia').value.trim();
+  const tituloIrmao = document.getElementById('titulo').value.trim();
   const nomeIrmao = document.getElementById('nome').value.trim();
   const numeroLoja = document.getElementById('numeroLoja').value.trim();
   const nomeLoja = document.getElementById('nomeLoja').value.trim();
-  const telefoneIrmao = document.getElementById('telefone').value;
+  const telefoneIrmao = document.getElementById('telefone').value.trim();
   const nomeCompleto = `${tituloIrmao} ${nomeIrmao}`.trim();
 
+  if (!reuniaoId || !eventoData) {
+    alert('Selecione uma reuniao valida antes de enviar a confirmacao.');
+    eventoSelect?.focus();
+    return;
+  }
+
   const dados = {
-    reuniao_id: eventoOption?.dataset?.id || null,
-    evento_data: eventoData || null,
+    reuniao_id: reuniaoId,
+    evento_data: eventoData,
     evento_titulo: eventoTitulo,
     evento_label: eventoLabel,
     potencia,
@@ -132,7 +148,7 @@ form?.addEventListener('submit', async (evento) => {
     botaoEnviar.disabled = true;
     botaoEnviar.innerText = 'Enviando...';
 
-    const { error } = await supabase.from('confirmacoes_presenca').insert(dados);
+    const { error } = await lojaSupabase.from('confirmacoes_presenca').insert(dados);
     if (error) throw error;
 
     mensagemConfirmacao.innerHTML =
@@ -148,7 +164,8 @@ form?.addEventListener('submit', async (evento) => {
     form.reset();
   } catch (erro) {
     console.warn(erro);
-    alert('Nao foi possivel enviar a confirmacao. Verifique sua conexao ou a configuracao do Supabase.');
+    const detalhe = erro?.message ? `\n\nDetalhe tecnico: ${erro.message}` : '';
+    alert(`Nao foi possivel enviar a confirmacao. Verifique sua conexao ou a politica de insert da tabela confirmacoes_presenca.${detalhe}`);
   } finally {
     botaoEnviar.disabled = false;
     botaoEnviar.innerText = 'Enviar Confirmacao';
@@ -166,3 +183,4 @@ modal?.addEventListener('click', (evento) => {
 });
 
 carregarEventos();
+
