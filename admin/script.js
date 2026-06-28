@@ -148,6 +148,12 @@ const setStatus = (message, type = '') => {
   syncStatus.dataset.type = type;
 };
 
+const setSetupStatus = (message, type = '') => {
+  if (!setupStatus) return;
+  setupStatus.textContent = message;
+  setupStatus.dataset.type = type;
+};
+
 const escapeHTML = (value) => {
   const element = document.createElement('div');
   element.textContent = value ?? '';
@@ -418,7 +424,7 @@ const loadMetrics = async () => {
 
 const initialize = async () => {
   if (!supabase) {
-    setupStatus.textContent = 'Configure url e anonKey em supabase-config.js antes de entrar.';
+    setSetupStatus('Configure url e anonKey em supabase-config.js antes de entrar.', 'error');
     showLogin();
     return;
   }
@@ -429,7 +435,7 @@ const initialize = async () => {
     await loadMetrics();
     await loadModule();
   } else {
-    setupStatus.textContent = 'Supabase configurado. Entre com seu usuario administrativo.';
+    setSetupStatus('Supabase configurado. Entre com seu usuario administrativo.', 'ok');
     showLogin();
   }
 };
@@ -438,7 +444,7 @@ loginForm?.addEventListener('submit', async (event) => {
   event.preventDefault();
 
   if (!supabase) {
-    alert('Supabase ainda nao configurado.');
+    setSetupStatus('Supabase ainda nao configurado.', 'error');
     return;
   }
 
@@ -448,10 +454,13 @@ loginForm?.addEventListener('submit', async (event) => {
   const { error } = await supabase.auth.signInWithPassword({ email, password });
 
   if (error) {
-    alert('Acesso invalido. Confira e-mail, senha e usuario no Supabase.');
+    const message = `Erro no login: ${error.message}`;
+    setSetupStatus(message, 'error');
+    alert(`${message}\n\nConfira se o usuario existe em Authentication > Users e se esta confirmado.`);
     return;
   }
 
+  setSetupStatus('Login realizado com sucesso.', 'ok');
   showDashboard();
   await loadMetrics();
   await loadModule();
