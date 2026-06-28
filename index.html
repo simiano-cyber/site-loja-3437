@@ -17,16 +17,32 @@
   <link rel="stylesheet" href="style.css?v=20260628-presencas-resumo" />
   <style>
     .reuniao-resumo-graus {
-      display: block;
+      display: grid;
+      gap: 2px;
       color: #1f4e79;
       font-size: .66rem;
       font-weight: 800;
       line-height: 1.35;
       margin-top: 3px;
+      margin-bottom: 0;
+      padding: 0;
+      list-style: none;
     }
 
-    .reuniao-resumo-graus span {
-      display: block;
+    .reuniao-resumo-graus li {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      white-space: nowrap;
+    }
+
+    .reuniao-resumo-graus li::before {
+      content: "";
+      width: 5px;
+      height: 5px;
+      border-radius: 999px;
+      background: #c9a35d;
+      flex: 0 0 auto;
     }
   </style>
 </head>
@@ -328,6 +344,6 @@
   <!-- Arquivo principal de scripts -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="supabase-config.js?v=20260628-supabase"></script>
-  <script src="script.js?v=20260628-totais-presenca-linhas"></script>
+  <script src="script.js?v=20260628-totais-presenca-lista"></script>
 </body>
 </html>

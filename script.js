@@ -70,11 +70,11 @@ const criarCardReuniao = (reuniaoOriginal) => {
   const fotos = reuniao.fotos.slice(0, 2);
   const resumoGrausHTML = Number(reuniao.confirmados || 0)
     ? `
-      <span class="reuniao-resumo-graus">
-        <span>A∴M∴: ${Number(reuniao.aprendizes || 0)}</span>
-        <span>C∴M∴: ${Number(reuniao.companheiros || 0)}</span>
-        <span>M∴M∴: ${Number(reuniao.mestres || 0)}</span>
-      </span>
+      <ul class="reuniao-resumo-graus" aria-label="Resumo por grau">
+        <li>A∴M∴: ${Number(reuniao.aprendizes || 0)}</li>
+        <li>C∴M∴: ${Number(reuniao.companheiros || 0)}</li>
+        <li>M∴M∴: ${Number(reuniao.mestres || 0)}</li>
+      </ul>
     `
     : '';
 
