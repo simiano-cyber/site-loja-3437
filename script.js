@@ -56,6 +56,9 @@ const cameraIconeHTML = `
 const normalizarReuniao = (reuniao) => ({
   ...reuniao,
   confirmados: Number(reuniao.confirmados || reuniao.confirmacoes_count || 0),
+  aprendizes: Number(reuniao.aprendizes || 0),
+  companheiros: Number(reuniao.companheiros || 0),
+  mestres: Number(reuniao.mestres || 0),
   fotos: Array.isArray(reuniao.fotos) ? reuniao.fotos : [],
 });
 
@@ -64,6 +67,13 @@ const criarCardReuniao = (reuniaoOriginal) => {
   const status = reuniao.status || 'programada';
   const statusNormalizado = String(status).toLowerCase();
   const fotos = reuniao.fotos.slice(0, 2);
+  const resumoGrausHTML = Number(reuniao.confirmados || 0)
+    ? `
+      <span class="reuniao-resumo-graus">
+        A∴M∴ ${Number(reuniao.aprendizes || 0)} · Comp∴ ${Number(reuniao.companheiros || 0)} · Mestres ${Number(reuniao.mestres || 0)}
+      </span>
+    `
+    : '';
 
   const fotosHTML = fotos.length
     ? `
@@ -121,7 +131,8 @@ const criarCardReuniao = (reuniaoOriginal) => {
         <p>${sanitizarTexto(reuniao.descricao || '')}</p>
       </div>
       <div class="reuniao-col reuniao-col--confirmados">
-        <span class="reuniao-meta">Confirmacoes: ${Number(reuniao.confirmados || 0)}</span>
+        <span class="reuniao-meta">Confirmações: ${Number(reuniao.confirmados || 0)}</span>
+        ${resumoGrausHTML}
       </div>
       <div class="reuniao-col reuniao-col--status">
         <span class="reuniao-status">${sanitizarTexto(status)}</span>
@@ -139,24 +150,38 @@ const criarCardReuniao = (reuniaoOriginal) => {
 const carregarReunioes = async () => {
   if (!reunioesGrid) return;
 
-  const supabase = window.getLojaSupabaseClient?.();
+  const lojaSupabase = window.getLojaSupabaseClient?.();
 
-  if (!supabase) {
+  if (!lojaSupabase) {
     reunioesGrid.innerHTML = ordenarPorData(seedReunioes).map(criarCardReuniao).join('');
     return;
   }
 
   try {
-    const { data, error } = await supabase
+    const [{ data, error }, { data: resumos, error: resumoError }] = await Promise.all([
+      lojaSupabase
       .from('reunioes')
-      .select('id,data,titulo,descricao,status,fotos,confirmacoes_presenca(count)')
-      .order('data', { ascending: true });
+        .select('id,data,titulo,descricao,status,fotos')
+        .order('data', { ascending: true }),
+      lojaSupabase.rpc('get_reuniao_resumos'),
+    ]);
 
     if (error) throw error;
+    if (resumoError) {
+      console.warn('Nao foi possivel ler o resumo de confirmacoes.', resumoError);
+    }
+
+    const resumosPorData = (resumos || []).reduce((accumulator, resumo) => {
+      accumulator[resumo.evento_data] = resumo;
+      return accumulator;
+    }, {});
 
     const reunioes = (data || []).map((reuniao) => ({
       ...reuniao,
-      confirmados: reuniao.confirmacoes_presenca?.[0]?.count || 0,
+      confirmados: resumosPorData[reuniao.data]?.total || 0,
+      aprendizes: resumosPorData[reuniao.data]?.aprendizes || 0,
+      companheiros: resumosPorData[reuniao.data]?.companheiros || 0,
+      mestres: resumosPorData[reuniao.data]?.mestres || 0,
     }));
 
     reunioesGrid.innerHTML = reunioes.length
@@ -183,3 +208,4 @@ if (menuToggle && menu) {
 }
 
 carregarReunioes();
+

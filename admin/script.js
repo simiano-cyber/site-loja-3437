@@ -14,6 +14,10 @@ const moduleTableHead = document.getElementById('moduleTableHead');
 const moduleTableBody = document.getElementById('moduleTableBody');
 const moduleForm = document.getElementById('moduleForm');
 const syncStatus = document.getElementById('syncStatus');
+const presenceFilters = document.getElementById('presenceFilters');
+const presenceDateFilter = document.getElementById('presenceDateFilter');
+const presenceTitleFilter = document.getElementById('presenceTitleFilter');
+const presenceEventFilter = document.getElementById('presenceEventFilter');
 
 const metricObreiros = document.getElementById('metricObreiros');
 const metricReunioes = document.getElementById('metricReunioes');
@@ -132,11 +136,13 @@ const MODULES = {
       { key: 'created_at', label: 'Criado em' },
       { key: 'evento_data', label: 'Data' },
       { key: 'evento_titulo', label: 'Reuniao' },
+      { key: 'titulo', label: 'Tipo' },
       { key: 'nome_completo', label: 'Nome' },
+      { key: 'potencia', label: 'Potencia' },
       { key: 'telefone', label: 'Telefone' },
       { key: 'nome_loja', label: 'Loja' },
     ],
-    list: ['evento_data', 'evento_titulo', 'nome_completo', 'telefone'],
+    list: ['evento_data', 'evento_titulo', 'titulo', 'nome_completo', 'telefone'],
   },
 };
 
@@ -178,10 +184,37 @@ const formatValue = (value) => {
   return String(value);
 };
 
+const normalizarTituloMaconico = (value) => {
+  const compact = normalizeSearch(value).replace(/[^a-z]/g, '');
+
+  if (compact.includes('vm')) return 'V∴M∴';
+  if (compact.includes('mi')) return 'M∴I∴';
+  if (compact.includes('mm')) return 'M∴M∴';
+  if (compact.includes('comp')) return 'Comp∴';
+  if (compact.includes('am')) return 'A∴M∴';
+
+  return formatValue(value);
+};
+
 const normalizeSearch = (value) =>
   String(value || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 
 const getCurrentModule = () => MODULES[activeModuleKey];
+
+const aplicarFiltrosPresenca = (rows) => {
+  if (activeModuleKey !== 'confirmacoes_presenca') return rows;
+
+  const dataFiltro = presenceDateFilter?.value || '';
+  const tipoFiltro = presenceTitleFilter?.value || '';
+  const eventoFiltro = normalizeSearch(presenceEventFilter?.value || '');
+
+  return rows.filter((row) => {
+    const dataOk = !dataFiltro || String(row.evento_data || '').slice(0, 10) === dataFiltro;
+    const tipoOk = !tipoFiltro || normalizarTituloMaconico(row.titulo) === tipoFiltro;
+    const eventoOk = !eventoFiltro || normalizeSearch(row.evento_titulo || row.evento_label || '').includes(eventoFiltro);
+    return dataOk && tipoOk && eventoOk;
+  });
+};
 
 const showDashboard = () => {
   loginCard.hidden = true;
@@ -296,6 +329,7 @@ const renderTable = () => {
   const rows = term
     ? activeRows.filter((row) => normalizeSearch(Object.values(row).join(' ')).includes(term))
     : activeRows;
+  const filteredRows = aplicarFiltrosPresenca(rows);
 
   moduleTableHead.innerHTML = `
     <tr>
@@ -304,15 +338,18 @@ const renderTable = () => {
     </tr>
   `;
 
-  if (!rows.length) {
+  if (!filteredRows.length) {
     moduleTableBody.innerHTML = `<tr><td colspan="${visibleColumns.length + 1}"><p class="admin-empty">Nenhum registro encontrado.</p></td></tr>`;
     return;
   }
 
-  moduleTableBody.innerHTML = rows
+  moduleTableBody.innerHTML = filteredRows
     .map((row) => {
       const cells = visibleColumns
-        .map((field) => `<td data-label="${escapeHTML(field.label)}">${escapeHTML(formatValue(row[field.key]))}</td>`)
+        .map((field) => {
+          const value = field.key === 'titulo' ? normalizarTituloMaconico(row[field.key]) : formatValue(row[field.key]);
+          return `<td data-label="${escapeHTML(field.label)}">${escapeHTML(value)}</td>`;
+        })
         .join('');
 
       const actions = module.readonly
@@ -345,6 +382,10 @@ const loadModule = async () => {
   moduleTitle.textContent = module.title;
   moduleDescription.textContent = module.description;
   btnNovoRegistro.hidden = Boolean(module.readonly);
+  if (presenceFilters) {
+    presenceFilters.hidden = activeModuleKey !== 'confirmacoes_presenca';
+    presenceFilters.style.display = activeModuleKey === 'confirmacoes_presenca' ? 'contents' : 'none';
+  }
   setStatus('Carregando...');
 
   try {
@@ -507,6 +548,9 @@ btnRecarregar?.addEventListener('click', async () => {
 });
 btnFecharEditor?.addEventListener('click', closeEditor);
 moduleSearch?.addEventListener('input', renderTable);
+presenceDateFilter?.addEventListener('input', renderTable);
+presenceTitleFilter?.addEventListener('change', renderTable);
+presenceEventFilter?.addEventListener('input', renderTable);
 moduleForm?.addEventListener('submit', saveRow);
 
 editorModal?.addEventListener('click', (event) => {
@@ -514,3 +558,4 @@ editorModal?.addEventListener('click', (event) => {
 });
 
 initialize();
+
