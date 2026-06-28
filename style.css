@@ -1015,6 +1015,15 @@ a {
     line-height: 1.7;
 }
 
+.admin-help[data-type="ok"] {
+    color: #166534;
+}
+
+.admin-help[data-type="error"] {
+    color: #b91c1c;
+    font-weight: 700;
+}
+
 .admin-home-link {
     background: #151b5d;
     color: #fff;
