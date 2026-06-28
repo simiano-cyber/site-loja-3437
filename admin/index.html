@@ -18,6 +18,8 @@
       color:#26314d;
       background:#fff;
     }
+    .admin-auth-switch{display:grid;gap:10px;margin-top:14px;}
+    .admin-auth-switch .confirmacao-button{width:100%;}
   </style>
 </head>
 <body class="admin-page">
@@ -44,6 +46,16 @@
         <input id="adminPassword" type="password" placeholder="Senha" autocomplete="current-password" required />
         <button type="submit" class="confirmacao-button">Entrar</button>
       </form>
+      <form id="adminRequestForm" class="admin-login-form" hidden>
+        <input id="requestName" type="text" placeholder="Nome" autocomplete="name" required />
+        <input id="requestEmail" type="email" placeholder="E-mail" autocomplete="username" required />
+        <input id="requestPassword" type="password" placeholder="Senha de acesso" autocomplete="new-password" minlength="6" required />
+        <button type="submit" class="confirmacao-button">Solicitar acesso</button>
+      </form>
+      <div class="admin-auth-switch">
+        <button type="button" class="confirmacao-button admin-secondary" id="btnShowRequest">Solicitar acesso administrativo</button>
+        <button type="button" class="confirmacao-button admin-secondary" id="btnShowLogin" hidden>Voltar ao login</button>
+      </div>
       <p class="admin-help" id="setupStatus">Carregando integracao com o Supabase...</p>
     </section>
 
@@ -152,6 +164,6 @@
       }, 1200);
     });
   </script>
-  <script src="script.js?v=20260628-aprovacao-admin"></script>
+  <script src="script.js?v=20260628-solicitar-acesso"></script>
 </body>
 </html>

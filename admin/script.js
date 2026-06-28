@@ -1,5 +1,8 @@
 const loginCard = document.getElementById('adminLoginCard');
 const loginForm = document.getElementById('adminLoginForm');
+const adminRequestForm = document.getElementById('adminRequestForm');
+const btnShowRequest = document.getElementById('btnShowRequest');
+const btnShowLogin = document.getElementById('btnShowLogin');
 const adminDashboard = document.getElementById('adminDashboard');
 const setupStatus = document.getElementById('setupStatus');
 const btnLogout = document.getElementById('btnLogout');
@@ -245,7 +248,12 @@ const showLogin = () => {
   loginCard.hidden = false;
   adminDashboard.hidden = true;
   btnLogout.hidden = true;
+  loginForm.hidden = false;
+  adminRequestForm.hidden = true;
+  btnShowRequest.hidden = false;
+  btnShowLogin.hidden = true;
   loginForm.style.display = 'flex';
+  adminRequestForm.style.display = 'none';
   loginCard.style.display = 'block';
   adminDashboard.style.display = 'none';
   btnLogout.style.display = 'none';
@@ -255,11 +263,26 @@ const showAccessMessage = (message, type = 'error') => {
   loginCard.hidden = false;
   adminDashboard.hidden = true;
   btnLogout.hidden = false;
+  loginForm.hidden = true;
+  adminRequestForm.hidden = true;
+  btnShowRequest.hidden = true;
+  btnShowLogin.hidden = true;
   loginForm.style.display = 'none';
+  adminRequestForm.style.display = 'none';
   loginCard.style.display = 'block';
   adminDashboard.style.display = 'none';
   btnLogout.style.display = 'inline-flex';
   setSetupStatus(message, type);
+};
+
+const showRequestAccess = () => {
+  loginForm.hidden = true;
+  adminRequestForm.hidden = false;
+  btnShowRequest.hidden = true;
+  btnShowLogin.hidden = false;
+  loginForm.style.display = 'none';
+  adminRequestForm.style.display = 'flex';
+  setSetupStatus('Preencha os dados para criar o usuario e solicitar aprovacao.', 'ok');
 };
 
 const isAdminPrincipal = () =>
@@ -638,6 +661,49 @@ loginForm?.addEventListener('submit', async (event) => {
   }
 });
 
+adminRequestForm?.addEventListener('submit', async (event) => {
+  event.preventDefault();
+
+  if (!lojaSupabase) {
+    setSetupStatus('Supabase ainda nao configurado.', 'error');
+    return;
+  }
+
+  const name = document.getElementById('requestName').value.trim();
+  const email = document.getElementById('requestEmail').value.trim();
+  const password = document.getElementById('requestPassword').value;
+
+  setSetupStatus('Criando solicitacao de acesso...', 'ok');
+
+  const { data, error } = await lojaSupabase.auth.signUp({
+    email,
+    password,
+    options: {
+      data: { name },
+    },
+  });
+
+  if (error) {
+    const message = `Erro ao solicitar acesso: ${error.message}`;
+    setSetupStatus(message, 'error');
+    alert(`${message}\n\nSe esse e-mail ja existir, use o login ou redefina a senha no Supabase.`);
+    return;
+  }
+
+  adminRequestForm.reset();
+
+  if (data.session) {
+    await handleSessionAccess(data.session);
+    return;
+  }
+
+  setSetupStatus('Solicitacao criada. Confirme o e-mail, entre com sua senha e aguarde aprovacao da administracao.', 'ok');
+  showLogin();
+});
+
+btnShowRequest?.addEventListener('click', showRequestAccess);
+btnShowLogin?.addEventListener('click', showLogin);
+
 btnLogout?.addEventListener('click', async () => {
   await lojaSupabase?.auth.signOut();
   currentAdminProfile = null;
@@ -678,4 +744,3 @@ editorModal?.addEventListener('click', (event) => {
 });
 
 initialize();
-
