@@ -66,6 +66,7 @@ const criarCardReuniao = (reuniaoOriginal) => {
   const reuniao = normalizarReuniao(reuniaoOriginal);
   const status = reuniao.status || 'programada';
   const statusNormalizado = String(status).toLowerCase();
+  const rotuloConfirmados = statusNormalizado === 'realizada' ? 'Presenças' : 'Confirmados';
   const fotos = reuniao.fotos.slice(0, 2);
   const resumoGrausHTML = Number(reuniao.confirmados || 0)
     ? `
@@ -131,7 +132,7 @@ const criarCardReuniao = (reuniaoOriginal) => {
         <p>${sanitizarTexto(reuniao.descricao || '')}</p>
       </div>
       <div class="reuniao-col reuniao-col--confirmados">
-        <span class="reuniao-meta">Confirmações: ${Number(reuniao.confirmados || 0)}</span>
+        <span class="reuniao-meta">${rotuloConfirmados}: ${Number(reuniao.confirmados || 0)}</span>
         ${resumoGrausHTML}
       </div>
       <div class="reuniao-col reuniao-col--status">
@@ -171,18 +172,27 @@ const carregarReunioes = async () => {
       console.warn('Nao foi possivel ler o resumo de confirmacoes.', resumoError);
     }
 
-    const resumosPorData = (resumos || []).reduce((accumulator, resumo) => {
-      accumulator[resumo.evento_data] = resumo;
+    const resumosPorReuniao = (resumos || []).reduce((accumulator, resumo) => {
+      if (resumo.reuniao_id) {
+        accumulator.porId[resumo.reuniao_id] = resumo;
+      }
+      if (resumo.evento_data) {
+        accumulator.porData[resumo.evento_data] = resumo;
+      }
       return accumulator;
-    }, {});
+    }, { porId: {}, porData: {} });
 
-    const reunioes = (data || []).map((reuniao) => ({
-      ...reuniao,
-      confirmados: resumosPorData[reuniao.data]?.total || 0,
-      aprendizes: resumosPorData[reuniao.data]?.aprendizes || 0,
-      companheiros: resumosPorData[reuniao.data]?.companheiros || 0,
-      mestres: resumosPorData[reuniao.data]?.mestres || 0,
-    }));
+    const reunioes = (data || []).map((reuniao) => {
+      const resumo = resumosPorReuniao.porId[reuniao.id] || resumosPorReuniao.porData[reuniao.data] || {};
+
+      return {
+        ...reuniao,
+        confirmados: resumo.total || 0,
+        aprendizes: resumo.aprendizes || 0,
+        companheiros: resumo.companheiros || 0,
+        mestres: resumo.mestres || 0,
+      };
+    });
 
     reunioesGrid.innerHTML = reunioes.length
       ? reunioes.map(criarCardReuniao).join('')
