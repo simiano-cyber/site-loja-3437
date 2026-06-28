@@ -3,7 +3,6 @@ const loginForm = document.getElementById('adminLoginForm');
 const adminRequestForm = document.getElementById('adminRequestForm');
 const btnShowRequest = document.getElementById('btnShowRequest');
 const btnShowLogin = document.getElementById('btnShowLogin');
-const btnResendConfirmation = document.getElementById('btnResendConfirmation');
 const adminDashboard = document.getElementById('adminDashboard');
 const setupStatus = document.getElementById('setupStatus');
 const btnLogout = document.getElementById('btnLogout');
@@ -253,7 +252,6 @@ const showLogin = () => {
   adminRequestForm.hidden = true;
   btnShowRequest.hidden = false;
   btnShowLogin.hidden = true;
-  btnResendConfirmation.hidden = false;
   loginForm.style.display = 'flex';
   adminRequestForm.style.display = 'none';
   loginCard.style.display = 'block';
@@ -269,7 +267,6 @@ const showAccessMessage = (message, type = 'error') => {
   adminRequestForm.hidden = true;
   btnShowRequest.hidden = true;
   btnShowLogin.hidden = true;
-  btnResendConfirmation.hidden = true;
   loginForm.style.display = 'none';
   adminRequestForm.style.display = 'none';
   loginCard.style.display = 'block';
@@ -283,7 +280,6 @@ const showRequestAccess = () => {
   adminRequestForm.hidden = false;
   btnShowRequest.hidden = true;
   btnShowLogin.hidden = false;
-  btnResendConfirmation.hidden = true;
   loginForm.style.display = 'none';
   adminRequestForm.style.display = 'flex';
   setSetupStatus('Preencha os dados para criar o usuario e solicitar aprovacao.', 'ok');
@@ -710,38 +706,6 @@ adminRequestForm?.addEventListener('submit', async (event) => {
 
 btnShowRequest?.addEventListener('click', showRequestAccess);
 btnShowLogin?.addEventListener('click', showLogin);
-btnResendConfirmation?.addEventListener('click', async () => {
-  if (!lojaSupabase) {
-    setSetupStatus('Supabase ainda nao configurado.', 'error');
-    return;
-  }
-
-  const email = document.getElementById('adminEmail').value.trim();
-  if (!email) {
-    setSetupStatus('Informe o e-mail no campo de login antes de reenviar a confirmacao.', 'error');
-    document.getElementById('adminEmail')?.focus();
-    return;
-  }
-
-  btnResendConfirmation.disabled = true;
-  setSetupStatus('Reenviando e-mail de confirmacao...', 'ok');
-
-  const { error } = await lojaSupabase.auth.resend({
-    type: 'signup',
-    email,
-  });
-
-  btnResendConfirmation.disabled = false;
-
-  if (error) {
-    const message = `Nao foi possivel reenviar a confirmacao: ${error.message}`;
-    setSetupStatus(message, 'error');
-    alert(message);
-    return;
-  }
-
-  setSetupStatus('E-mail de confirmacao reenviado. Verifique a caixa de entrada e o spam.', 'ok');
-});
 
 btnLogout?.addEventListener('click', async () => {
   await lojaSupabase?.auth.signOut();

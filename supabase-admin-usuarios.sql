@@ -102,6 +102,31 @@ create trigger on_auth_user_created_admin_access
 after insert on auth.users
 for each row execute function public.criar_admin_usuario_pendente();
 
+create or replace function public.confirmar_email_auth_admin_aprovado()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  if new.status = 'aprovado' then
+    update auth.users
+    set
+      email_confirmed_at = coalesce(email_confirmed_at, now()),
+      updated_at = now()
+    where id = new.user_id;
+  end if;
+
+  return new;
+end;
+$$;
+
+drop trigger if exists on_admin_usuario_aprovado_confirma_auth on public.admin_usuarios;
+
+create trigger on_admin_usuario_aprovado_confirma_auth
+after insert or update of status on public.admin_usuarios
+for each row execute function public.confirmar_email_auth_admin_aprovado();
+
 insert into public.admin_usuarios (user_id, email, nome, status, perfil)
 select
   id,
@@ -112,6 +137,16 @@ select
 from auth.users
 where email is not null
 on conflict (user_id) do nothing;
+
+update auth.users
+set
+  email_confirmed_at = coalesce(email_confirmed_at, now()),
+  updated_at = now()
+where id in (
+  select user_id
+  from public.admin_usuarios
+  where status = 'aprovado'
+);
 
 drop policy if exists "Usuarios autenticados gerenciam obreiros" on public.obreiros;
 drop policy if exists "Usuarios autenticados gerenciam reunioes" on public.reunioes;
