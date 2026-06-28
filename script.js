@@ -71,7 +71,9 @@ const criarCardReuniao = (reuniaoOriginal) => {
   const resumoGrausHTML = Number(reuniao.confirmados || 0)
     ? `
       <span class="reuniao-resumo-graus">
-        A∴M∴ ${Number(reuniao.aprendizes || 0)} · Comp∴ ${Number(reuniao.companheiros || 0)} · Mestres ${Number(reuniao.mestres || 0)}
+        <span>A∴M∴: ${Number(reuniao.aprendizes || 0)}</span>
+        <span>C∴M∴: ${Number(reuniao.companheiros || 0)}</span>
+        <span>M∴M∴: ${Number(reuniao.mestres || 0)}</span>
       </span>
     `
     : '';
