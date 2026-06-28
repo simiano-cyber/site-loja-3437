@@ -22,6 +22,8 @@ const metricConfirmacoes = document.getElementById('metricConfirmacoes');
 
 const supabase = window.getLojaSupabaseClient?.();
 
+document.body.dataset.adminScriptLoaded = 'true';
+
 const MODULES = {
   reunioes: {
     title: 'Agenda',
@@ -153,6 +155,15 @@ const setSetupStatus = (message, type = '') => {
   setupStatus.textContent = message;
   setupStatus.dataset.type = type;
 };
+
+window.addEventListener('error', (event) => {
+  setSetupStatus(`Erro no Admin: ${event.message}`, 'error');
+});
+
+window.addEventListener('unhandledrejection', (event) => {
+  const message = event.reason?.message || String(event.reason || 'erro desconhecido');
+  setSetupStatus(`Erro no Admin: ${message}`, 'error');
+});
 
 const escapeHTML = (value) => {
   const element = document.createElement('div');
@@ -442,6 +453,8 @@ const initialize = async () => {
 
 loginForm?.addEventListener('submit', async (event) => {
   event.preventDefault();
+
+  setSetupStatus('Tentando entrar no Supabase...', 'ok');
 
   if (!supabase) {
     setSetupStatus('Supabase ainda nao configurado.', 'error');
