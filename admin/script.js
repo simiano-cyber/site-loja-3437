@@ -20,7 +20,7 @@ const metricReunioes = document.getElementById('metricReunioes');
 const metricPendentes = document.getElementById('metricPendentes');
 const metricConfirmacoes = document.getElementById('metricConfirmacoes');
 
-const supabase = window.getLojaSupabaseClient?.();
+const lojaSupabase = window.getLojaSupabaseClient?.();
 
 document.body.dataset.adminScriptLoaded = 'true';
 
@@ -349,7 +349,7 @@ const loadModule = async () => {
 
   try {
     const direction = module.order === 'created_at' ? false : true;
-    const { data, error } = await supabase
+    const { data, error } = await lojaSupabase
       .from(module.table)
       .select('*')
       .order(module.order, { ascending: direction });
@@ -376,8 +376,8 @@ const saveRow = async (event) => {
 
   try {
     const request = editingId
-      ? supabase.from(module.table).update(payload).eq('id', editingId)
-      : supabase.from(module.table).insert(payload);
+      ? lojaSupabase.from(module.table).update(payload).eq('id', editingId)
+      : lojaSupabase.from(module.table).insert(payload);
 
     const { error } = await request;
     if (error) throw error;
@@ -401,7 +401,7 @@ const deleteRow = async (id) => {
   setStatus('Excluindo...');
 
   try {
-    const { error } = await supabase.from(module.table).delete().eq('id', id);
+    const { error } = await lojaSupabase.from(module.table).delete().eq('id', id);
     if (error) throw error;
 
     await loadModule();
@@ -414,7 +414,7 @@ const deleteRow = async (id) => {
 };
 
 const countTable = async (table, filter) => {
-  let query = supabase.from(table).select('id', { count: 'exact', head: true });
+  let query = lojaSupabase.from(table).select('id', { count: 'exact', head: true });
   if (filter) query = filter(query);
   const { count, error } = await query;
   if (error) throw error;
@@ -440,13 +440,13 @@ const loadMetrics = async () => {
 };
 
 const initialize = async () => {
-  if (!supabase) {
+  if (!lojaSupabase) {
     setSetupStatus('Configure url e anonKey em supabase-config.js antes de entrar.', 'error');
     showLogin();
     return;
   }
 
-  const { data } = await supabase.auth.getSession();
+  const { data } = await lojaSupabase.auth.getSession();
   if (data.session) {
     showDashboard();
     await loadMetrics();
@@ -462,7 +462,7 @@ loginForm?.addEventListener('submit', async (event) => {
 
   setSetupStatus('Tentando entrar no Supabase...', 'ok');
 
-  if (!supabase) {
+  if (!lojaSupabase) {
     setSetupStatus('Supabase ainda nao configurado.', 'error');
     return;
   }
@@ -470,7 +470,7 @@ loginForm?.addEventListener('submit', async (event) => {
   const email = document.getElementById('adminEmail').value.trim();
   const password = document.getElementById('adminPassword').value;
 
-  const { error } = await supabase.auth.signInWithPassword({ email, password });
+  const { error } = await lojaSupabase.auth.signInWithPassword({ email, password });
 
   if (error) {
     const message = `Erro no login: ${error.message}`;
@@ -486,7 +486,7 @@ loginForm?.addEventListener('submit', async (event) => {
 });
 
 btnLogout?.addEventListener('click', async () => {
-  await supabase?.auth.signOut();
+  await lojaSupabase?.auth.signOut();
   showLogin();
 });
 
