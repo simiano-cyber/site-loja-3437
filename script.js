@@ -56,6 +56,7 @@ const cameraIconeHTML = `
 const normalizarReuniao = (reuniao) => ({
   ...reuniao,
   confirmados: Number(reuniao.confirmados || reuniao.confirmacoes_count || 0),
+  convidados: Number(reuniao.convidados || 0),
   aprendizes: Number(reuniao.aprendizes || 0),
   companheiros: Number(reuniao.companheiros || 0),
   mestres: Number(reuniao.mestres || 0),
@@ -68,12 +69,13 @@ const criarCardReuniao = (reuniaoOriginal) => {
   const statusNormalizado = String(status).toLowerCase();
   const rotuloConfirmados = statusNormalizado === 'realizada' ? 'Presenças' : 'Confirmados';
   const fotos = reuniao.fotos.slice(0, 2);
-  const resumoGrausHTML = Number(reuniao.confirmados || 0)
+  const resumoGrausHTML = Number(reuniao.confirmados || 0) || Number(reuniao.convidados || 0)
     ? `
       <ul class="reuniao-resumo-graus" aria-label="Resumo por grau">
         <li>A∴M∴: ${Number(reuniao.aprendizes || 0)}</li>
         <li>C∴M∴: ${Number(reuniao.companheiros || 0)}</li>
         <li>M∴M∴: ${Number(reuniao.mestres || 0)}</li>
+        ${Number(reuniao.convidados || 0) ? `<li>Convidados: ${Number(reuniao.convidados)}</li>` : ''}
       </ul>
     `
     : '';
@@ -190,6 +192,7 @@ const carregarReunioes = async () => {
       return {
         ...reuniao,
         confirmados: resumo.total || 0,
+        convidados: resumo.convidados || 0,
         aprendizes: resumo.aprendizes || 0,
         companheiros: resumo.companheiros || 0,
         mestres: resumo.mestres || 0,

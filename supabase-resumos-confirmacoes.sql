@@ -7,7 +7,8 @@ returns table (
   total bigint,
   aprendizes bigint,
   companheiros bigint,
-  mestres bigint
+  mestres bigint,
+  convidados bigint
 )
 language sql
 security definer
@@ -32,7 +33,8 @@ as $$
          or replace(coalesce(confirmacoes_presenca.titulo, ''), ' ', '') ilike '%MM%'
          or replace(coalesce(confirmacoes_presenca.titulo, ''), ' ', '') ilike '%MI%'
          or replace(coalesce(confirmacoes_presenca.titulo, ''), ' ', '') ilike '%VM%'
-    )::bigint as mestres
+    )::bigint as mestres,
+    coalesce(sum(coalesce(cardinality(confirmacoes_presenca.convidados), 0)), 0)::bigint as convidados
   from public.reunioes
   left join public.confirmacoes_presenca
     on confirmacoes_presenca.reuniao_id = reunioes.id
