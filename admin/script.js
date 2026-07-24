@@ -239,16 +239,52 @@ const getCurrentModule = () => MODULES[activeModuleKey];
 const aplicarFiltrosPresenca = (rows) => {
   if (activeModuleKey !== 'confirmacoes_presenca') return rows;
 
-  const dataFiltro = presenceDateFilter?.value || '';
   const tipoFiltro = presenceTitleFilter?.value || '';
-  const eventoFiltro = normalizeSearch(presenceEventFilter?.value || '');
+  const eventoFiltro = presenceEventFilter?.value || '';
 
   return rows.filter((row) => {
-    const dataOk = !dataFiltro || String(row.evento_data || '').slice(0, 10) === dataFiltro;
     const tipoOk = !tipoFiltro || normalizarTituloMaconico(row.titulo) === tipoFiltro;
-    const eventoOk = !eventoFiltro || normalizeSearch(row.evento_titulo || row.evento_label || '').includes(eventoFiltro);
-    return dataOk && tipoOk && eventoOk;
+    const rowKey = row.evento_data || row.evento_titulo || '';
+    const eventoOk = !eventoFiltro || rowKey === eventoFiltro;
+    return tipoOk && eventoOk;
   });
+};
+
+const populatePresenceEventFilter = (rows) => {
+  const selectEl = document.getElementById('presenceEventFilter');
+  if (!selectEl) return;
+
+  const currentValue = selectEl.value;
+
+  const eventsMap = new Map();
+  rows.forEach((row) => {
+    const dateStr = row.evento_data ? formatarData(row.evento_data, false) : '';
+    const label = dateStr ? `${dateStr} - ${row.evento_titulo || ''}` : (row.evento_titulo || '');
+    const key = row.evento_data || row.evento_titulo || '';
+    if (key && !eventsMap.has(key)) {
+      eventsMap.set(key, {
+        key: key,
+        label: label,
+        data: row.evento_data
+      });
+    }
+  });
+
+  const sortedEvents = Array.from(eventsMap.values()).sort((a, b) => {
+    const dateA = a.data ? new Date(`${a.data}T12:00:00`).getTime() : 0;
+    const dateB = b.data ? new Date(`${b.data}T12:00:00`).getTime() : 0;
+    return dateB - dateA;
+  });
+
+  selectEl.innerHTML = '<option value="">Todas as Reuniões</option>';
+  sortedEvents.forEach((ev) => {
+    const opt = document.createElement('option');
+    opt.value = ev.key;
+    opt.textContent = ev.label;
+    selectEl.appendChild(opt);
+  });
+
+  selectEl.value = currentValue;
 };
 
 const showDashboard = () => {
@@ -601,6 +637,9 @@ const loadModule = async () => {
     if (error) throw error;
 
     activeRows = data || [];
+    if (activeModuleKey === 'confirmacoes_presenca') {
+      populatePresenceEventFilter(activeRows);
+    }
     renderTable();
     setStatus('Supabase conectado', 'ok');
   } catch (error) {
@@ -811,7 +850,7 @@ btnRecarregar?.addEventListener('click', async () => {
 btnFecharEditor?.addEventListener('click', closeEditor);
 moduleSearch?.addEventListener('input', renderTable);
 presenceTitleFilter?.addEventListener('change', renderTable);
-presenceEventFilter?.addEventListener('input', renderTable);
+presenceEventFilter?.addEventListener('change', renderTable);
 moduleForm?.addEventListener('submit', saveRow);
 
 editorModal?.addEventListener('click', (event) => {

@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="Ambiente de gestao da Loja Tradicao e Progresso 3437." />
   <title>Gestao da Loja - Tradicao e Progresso 3437</title>
-  <link rel="stylesheet" href="../style.css?v=20260724-presencas-v3" />
+  <link rel="stylesheet" href="../style.css?v=20260724-presencas-v4" />
   <style>
     [hidden]{display:none!important;}
     .admin-presence-filters{display:contents;}
@@ -121,7 +121,9 @@
             </label>
             <label class="admin-search">
               <span>Reunião</span>
-              <input type="search" id="presenceEventFilter" placeholder="Título da reunião" />
+              <select id="presenceEventFilter">
+                <option value="">Todas as Reuniões</option>
+              </select>
             </label>
           </div>
           <span class="admin-sync-status" id="syncStatus">Supabase conectado</span>
@@ -187,6 +189,6 @@
       }, 1200);
     });
   </script>
-  <script src="script.js?v=20260724-presencas-v3"></script>
+  <script src="script.js?v=20260724-presencas-v4"></script>
 </body>
 </html>
