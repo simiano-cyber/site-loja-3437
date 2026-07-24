@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="Ambiente de gestao da Loja Tradicao e Progresso 3437." />
   <title>Gestao da Loja - Tradicao e Progresso 3437</title>
-  <link rel="stylesheet" href="../style.css?v=20260724-presencas-v2" />
+  <link rel="stylesheet" href="../style.css?v=20260724-presencas-v3" />
   <style>
     [hidden]{display:none!important;}
     .admin-presence-filters{display:contents;}
@@ -109,10 +109,6 @@
           </label>
           <div class="admin-presence-filters" id="presenceFilters" hidden>
             <label class="admin-search">
-              <span>Data</span>
-              <input type="date" id="presenceDateFilter" />
-            </label>
-            <label class="admin-search">
               <span>Tipo</span>
               <select id="presenceTitleFilter">
                 <option value="">Todos</option>
@@ -129,6 +125,33 @@
             </label>
           </div>
           <span class="admin-sync-status" id="syncStatus">Supabase conectado</span>
+        </div>
+
+        <div class="presence-summary" id="presenceSummary" hidden>
+          <div class="presence-summary-card presence-total">
+            <span class="presence-summary-label">Total Geral</span>
+            <strong class="presence-summary-val" id="presTotal">0</strong>
+          </div>
+          <div class="presence-summary-card">
+            <span class="presence-summary-label">V∴M∴</span>
+            <strong class="presence-summary-val" id="presVM">0</strong>
+          </div>
+          <div class="presence-summary-card">
+            <span class="presence-summary-label">M∴I∴</span>
+            <strong class="presence-summary-val" id="presMI">0</strong>
+          </div>
+          <div class="presence-summary-card">
+            <span class="presence-summary-label">M∴M∴</span>
+            <strong class="presence-summary-val" id="presMM">0</strong>
+          </div>
+          <div class="presence-summary-card">
+            <span class="presence-summary-label">Comp∴</span>
+            <strong class="presence-summary-val" id="presComp">0</strong>
+          </div>
+          <div class="presence-summary-card">
+            <span class="presence-summary-label">A∴M∴</span>
+            <strong class="presence-summary-val" id="presAM">0</strong>
+          </div>
         </div>
 
         <div class="admin-table-wrap">
@@ -164,6 +187,6 @@
       }, 1200);
     });
   </script>
-  <script src="script.js?v=20260724-presencas-v2"></script>
+  <script src="script.js?v=20260724-presencas-v3"></script>
 </body>
 </html>

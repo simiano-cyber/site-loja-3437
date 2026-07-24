@@ -482,6 +482,39 @@ const renderTable = () => {
     tableEl.className = `agenda-table admin-data-table admin-table-${activeModuleKey}`;
   }
 
+  if (activeModuleKey === 'confirmacoes_presenca') {
+    let total = 0;
+    let ap = 0;
+    let comp = 0;
+    let mm = 0;
+    let mi = 0;
+    let vm = 0;
+
+    filteredRows.forEach((row) => {
+      total++;
+      const t = normalizarTituloMaconico(row.titulo);
+      if (t === 'A∴M∴') ap++;
+      else if (t === 'Comp∴') comp++;
+      else if (t === 'M∴M∴') mm++;
+      else if (t === 'M∴I∴') mi++;
+      else if (t === 'V∴M∴') vm++;
+    });
+
+    const valElTotal = document.getElementById('presTotal');
+    const valElVM = document.getElementById('presVM');
+    const valElMI = document.getElementById('presMI');
+    const valElMM = document.getElementById('presMM');
+    const valElComp = document.getElementById('presComp');
+    const valElAM = document.getElementById('presAM');
+
+    if (valElTotal) valElTotal.textContent = String(total);
+    if (valElVM) valElVM.textContent = String(vm);
+    if (valElMI) valElMI.textContent = String(mi);
+    if (valElMM) valElMM.textContent = String(mm);
+    if (valElComp) valElComp.textContent = String(comp);
+    if (valElAM) valElAM.textContent = String(ap);
+  }
+
   moduleTableHead.innerHTML = `
     <tr>
       ${visibleColumns.map((field) => `<th>${escapeHTML(field.label)}</th>`).join('')}
@@ -550,6 +583,11 @@ const loadModule = async () => {
   if (presenceFilters) {
     presenceFilters.hidden = activeModuleKey !== 'confirmacoes_presenca';
     presenceFilters.style.display = activeModuleKey === 'confirmacoes_presenca' ? 'contents' : 'none';
+  }
+  const summaryEl = document.getElementById('presenceSummary');
+  if (summaryEl) {
+    summaryEl.hidden = activeModuleKey !== 'confirmacoes_presenca';
+    summaryEl.style.display = activeModuleKey === 'confirmacoes_presenca' ? 'grid' : 'none';
   }
   setStatus('Carregando...');
 
@@ -772,7 +810,6 @@ btnRecarregar?.addEventListener('click', async () => {
 });
 btnFecharEditor?.addEventListener('click', closeEditor);
 moduleSearch?.addEventListener('input', renderTable);
-presenceDateFilter?.addEventListener('input', renderTable);
 presenceTitleFilter?.addEventListener('change', renderTable);
 presenceEventFilter?.addEventListener('input', renderTable);
 moduleForm?.addEventListener('submit', saveRow);
