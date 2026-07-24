@@ -1,4 +1,4 @@
-﻿/* =========================================================
+/* =========================================================
    FONTES EXTERNAS
    ========================================================= */
 @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800&family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700;800&display=swap');
@@ -1572,6 +1572,34 @@ a {
 .admin-data-table {
     min-width: 980px;
 }
+
+/* Customizações para a Tabela de Presenças */
+.admin-table-confirmacoes_presenca {
+    table-layout: auto !important;
+    min-width: 1120px !important;
+}
+
+.admin-table-confirmacoes_presenca thead th,
+.admin-table-confirmacoes_presenca tbody td {
+    text-align: left !important;
+    white-space: normal !important;
+    word-break: normal;
+}
+
+/* Redefinição e ajuste das larguras das colunas de presenças */
+.admin-table-confirmacoes_presenca thead th:nth-child(n) {
+    width: auto !important;
+    text-align: left !important;
+}
+
+.admin-table-confirmacoes_presenca thead th:nth-child(1) { width: 12% !important; } /* Enviado em */
+.admin-table-confirmacoes_presenca thead th:nth-child(2) { width: 9% !important; }  /* Data Reunião */
+.admin-table-confirmacoes_presenca thead th:nth-child(3) { width: 20% !important; } /* Reunião */
+.admin-table-confirmacoes_presenca thead th:nth-child(4) { width: 18% !important; } /* Irmão */
+.admin-table-confirmacoes_presenca thead th:nth-child(5) { width: 8% !important; }  /* Potência */
+.admin-table-confirmacoes_presenca thead th:nth-child(6) { width: 15% !important; } /* Loja */
+.admin-table-confirmacoes_presenca thead th:nth-child(7) { width: 10% !important; } /* Telefone */
+.admin-table-confirmacoes_presenca thead th:nth-child(8) { width: 8% !important; }  /* Ações */
 
 .admin-dynamic-form {
     grid-template-columns: repeat(2, minmax(0, 1fr));

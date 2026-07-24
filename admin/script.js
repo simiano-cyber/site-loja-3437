@@ -138,16 +138,15 @@ const MODULES = {
     order: 'created_at',
     readonly: true,
     columns: [
-      { key: 'created_at', label: 'Criado em' },
-      { key: 'evento_data', label: 'Data' },
-      { key: 'evento_titulo', label: 'Reuniao' },
-      { key: 'titulo', label: 'Tipo' },
-      { key: 'nome_completo', label: 'Nome' },
-      { key: 'potencia', label: 'Potencia' },
-      { key: 'telefone', label: 'Telefone' },
+      { key: 'created_at', label: 'Enviado em', type: 'datetime' },
+      { key: 'evento_data', label: 'Data Reunião', type: 'date' },
+      { key: 'evento_titulo', label: 'Reunião' },
+      { key: 'nome_completo', label: 'Irmão' },
+      { key: 'potencia', label: 'Potência' },
       { key: 'nome_loja', label: 'Loja' },
+      { key: 'telefone', label: 'Telefone' },
     ],
-    list: ['evento_data', 'evento_titulo', 'titulo', 'nome_completo', 'telefone'],
+    list: ['created_at', 'evento_data', 'evento_titulo', 'nome_completo', 'potencia', 'nome_loja', 'telefone'],
   },
   admin_usuarios: {
     title: 'Acessos',
@@ -201,6 +200,23 @@ const formatValue = (value) => {
   if (typeof value === 'boolean') return value ? 'Sim' : 'Nao';
   if (value === null || value === undefined) return '';
   return String(value);
+};
+
+const formatarData = (valor, incluirHora = false) => {
+  if (!valor) return '';
+  try {
+    const data = new Date(String(valor).includes('T') ? valor : `${valor}T12:00:00`);
+    if (isNaN(data.getTime())) return String(valor);
+    
+    return new Intl.DateTimeFormat('pt-BR', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      ...(incluirHora ? { hour: '2-digit', minute: '2-digit' } : {}),
+    }).format(data);
+  } catch (e) {
+    return String(valor);
+  }
 };
 
 const normalizarTituloMaconico = (value) => {
@@ -461,6 +477,11 @@ const renderTable = () => {
     : activeRows;
   const filteredRows = aplicarFiltrosPresenca(rows);
 
+  const tableEl = document.querySelector('.admin-data-table');
+  if (tableEl) {
+    tableEl.className = `agenda-table admin-data-table admin-table-${activeModuleKey}`;
+  }
+
   moduleTableHead.innerHTML = `
     <tr>
       ${visibleColumns.map((field) => `<th>${escapeHTML(field.label)}</th>`).join('')}
@@ -477,7 +498,21 @@ const renderTable = () => {
     .map((row) => {
       const cells = visibleColumns
         .map((field) => {
-          const value = field.key === 'titulo' ? normalizarTituloMaconico(row[field.key]) : formatValue(row[field.key]);
+          let value = '';
+          
+          if (field.key === 'created_at' || field.type === 'datetime') {
+            value = formatarData(row[field.key], true);
+          } else if (field.type === 'date' || field.key === 'evento_data') {
+            value = formatarData(row[field.key], false);
+          } else if (field.key === 'nome_loja' && activeModuleKey === 'confirmacoes_presenca') {
+            const numLoja = row['numero_loja'] || '';
+            value = numLoja ? `${row.nome_loja || ''} (${numLoja})` : (row.nome_loja || '');
+          } else if (field.key === 'titulo') {
+            value = normalizarTituloMaconico(row[field.key]);
+          } else {
+            value = formatValue(row[field.key]);
+          }
+          
           return `<td data-label="${escapeHTML(field.label)}">${escapeHTML(value)}</td>`;
         })
         .join('');
