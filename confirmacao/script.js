@@ -201,13 +201,14 @@ btnAdicionarConvidado?.addEventListener('click', () => {
 
   const input = document.createElement('input');
   input.type = 'text';
-  input.placeholder = 'Nome do Convidado';
+  input.placeholder = 'Nome Completo do Convidado';
   input.required = true;
 
   const btnRemover = document.createElement('button');
   btnRemover.type = 'button';
-  btnRemover.className = 'btn-remover-convidado';
-  btnRemover.textContent = 'Remover';
+  btnRemover.className = 'btn-remover-convidado-flat';
+  btnRemover.textContent = '✕';
+  btnRemover.title = 'Remover convidado';
   btnRemover.addEventListener('click', () => {
     row.remove();
   });

@@ -347,57 +347,37 @@
     }
 
     /* Estilos do Registro de Convidados */
-    .secao-convidados {
-      background: #ebe3d3;
-      border: 1px dashed #c9a35d;
-      padding: 20px;
-      border-radius: 16px;
-      margin-top: 10px;
-      box-sizing: border-box;
-    }
-
-    .convidados-topo {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 14px;
-    }
-
-    .convidados-topo h3 {
-      margin: 0;
-      font-size: 20px;
+    .btn-add-convidado-flat {
+      background: #fffdf8;
+      border: 1px solid #c9a35d;
       color: #151b5d;
+      padding: 16px;
+      border-radius: 12px;
+      font-size: 16px;
       font-family: Georgia, serif;
-    }
-
-    .btn-add-convidado {
-      background: #151b5d;
-      color: white;
-      border: none;
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      font-size: 22px;
       font-weight: bold;
       cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 3px 6px rgba(0,0,0,0.15);
+      text-align: center;
       transition: 0.2s;
-      padding: 0;
-      margin: 0;
+      width: 100%;
+      box-sizing: border-box;
+      box-shadow: none;
+      margin-top: 5px;
     }
 
-    .btn-add-convidado:hover {
-      background: #0f1446;
-      transform: scale(1.05);
+    .btn-add-convidado-flat:hover {
+      background: #fdfaf2;
+      border-color: #8f6a2f;
+      transform: none;
+      opacity: 1;
     }
 
     .lista-convidados {
       display: flex;
       flex-direction: column;
       gap: 12px;
+      width: 100%;
+      box-sizing: border-box;
     }
 
     .convidado-row {
@@ -405,53 +385,55 @@
       gap: 10px;
       align-items: center;
       width: 100%;
+      box-sizing: border-box;
     }
 
     .convidado-row input {
       flex: 1;
-      padding: 14px;
-      border-radius: 10px;
+      padding: 16px;
+      border-radius: 12px;
       border: 1px solid #c9a35d;
-      font-size: 15px;
+      font-size: 16px;
       background: #fffdf8;
+      color: #141414;
+      box-sizing: border-box;
     }
 
-    .btn-remover-convidado {
+    .btn-remover-convidado-flat {
       background: #b91c1c;
       color: white;
       border: none;
-      border-radius: 10px;
-      padding: 14px 18px;
+      border-radius: 12px;
+      width: 50px;
+      height: 50px;
       cursor: pointer;
-      font-size: 15px;
-      font-weight: bold;
+      font-size: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       transition: 0.2s;
-      white-space: nowrap;
+      flex-shrink: 0;
+      padding: 0;
+      margin: 0;
     }
 
-    .btn-remover-convidado:hover {
+    .btn-remover-convidado-flat:hover {
       background: #991b1b;
     }
 
     @media (max-width: 768px) {
-      .secao-convidados {
+      .btn-add-convidado-flat {
         padding: 14px;
-      }
-      .convidados-topo h3 {
-        font-size: 17px;
-      }
-      .btn-add-convidado {
-        width: 30px;
-        height: 30px;
-        font-size: 18px;
+        font-size: 14px;
       }
       .convidado-row input {
-        padding: 11px;
+        padding: 14px;
         font-size: 14px;
       }
-      .btn-remover-convidado {
-        padding: 11px 14px;
-        font-size: 14px;
+      .btn-remover-convidado-flat {
+        width: 45px;
+        height: 45px;
+        font-size: 18px;
       }
     }
   </style>
@@ -572,14 +554,11 @@
       >
 
       <!-- Seção de Convidados Não Maçons -->
-      <div class="secao-convidados">
-        <div class="convidados-topo">
-          <h3>Convidados Não Maçons</h3>
-          <button type="button" id="btnAdicionarConvidado" class="btn-add-convidado">+</button>
-        </div>
-        <div id="listaConvidados" class="lista-convidados">
-          <!-- Inputs dinâmicos de convidados serão inseridos aqui -->
-        </div>
+      <button type="button" id="btnAdicionarConvidado" class="btn-add-convidado-flat">
+        ➕ Adicionar Visitante Não Maçom (Convidado)
+      </button>
+      <div id="listaConvidados" class="lista-convidados">
+        <!-- Inputs dinâmicos de convidados serão inseridos aqui -->
       </div>
 
       <p class="mensagem-final">
@@ -621,7 +600,7 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="../supabase-config.js?v=20260628-supabase"></script>
-  <script src="script.js?v=20260724-convidados-v1"></script>
+  <script src="script.js?v=20260724-convidados-v2"></script>
 
 </body>
 

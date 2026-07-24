@@ -520,7 +520,8 @@ const renderTable = () => {
   }
 
   if (activeModuleKey === 'confirmacoes_presenca') {
-    let total = 0;
+    let totalIrmaos = 0;
+    let totalConvidados = 0;
     let ap = 0;
     let comp = 0;
     let mm = 0;
@@ -528,23 +529,29 @@ const renderTable = () => {
     let vm = 0;
 
     filteredRows.forEach((row) => {
-      total++;
+      totalIrmaos++;
       const t = normalizarTituloMaconico(row.titulo);
       if (t === 'A∴M∴') ap++;
       else if (t === 'Comp∴') comp++;
       else if (t === 'M∴M∴') mm++;
       else if (t === 'M∴I∴') mi++;
       else if (t === 'V∴M∴') vm++;
+
+      if (Array.isArray(row.convidados)) {
+        totalConvidados += row.convidados.length;
+      }
     });
 
     const valElTotal = document.getElementById('presTotal');
+    const valElConvidados = document.getElementById('presConvidados');
     const valElVM = document.getElementById('presVM');
     const valElMI = document.getElementById('presMI');
     const valElMM = document.getElementById('presMM');
     const valElComp = document.getElementById('presComp');
     const valElAM = document.getElementById('presAM');
 
-    if (valElTotal) valElTotal.textContent = String(total);
+    if (valElTotal) valElTotal.textContent = String(totalIrmaos);
+    if (valElConvidados) valElConvidados.textContent = String(totalConvidados);
     if (valElVM) valElVM.textContent = String(vm);
     if (valElMI) valElMI.textContent = String(mi);
     if (valElMM) valElMM.textContent = String(mm);

@@ -1605,7 +1605,7 @@ a {
 /* Estilos dos Cards de Resumo de Presenças */
 .presence-summary {
     display: grid;
-    grid-template-columns: repeat(6, minmax(0, 1fr));
+    grid-template-columns: repeat(7, minmax(0, 1fr));
     gap: 12px;
     margin-bottom: 18px;
     margin-top: 6px;
@@ -1633,6 +1633,11 @@ a {
 .presence-total {
     background: linear-gradient(135deg, #f4f8ff 0%, #e2eeff 100%);
     border-color: rgba(36, 100, 197, 0.3);
+}
+
+.presence-convidados-card {
+    background: linear-gradient(135deg, #fffcf5 0%, #fff3db 100%);
+    border-color: rgba(183, 138, 53, 0.4);
 }
 
 .presence-summary-label {
