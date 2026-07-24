@@ -136,7 +136,8 @@ const MODULES = {
     description: 'Confirmacoes recebidas pelo formulario publico.',
     table: 'confirmacoes_presenca',
     order: 'created_at',
-    readonly: true,
+    readonly: false,
+    allowCreate: false,
     columns: [
       { key: 'created_at', label: 'Enviado em', type: 'datetime' },
       { key: 'evento_data', label: 'Data Reunião', type: 'date' },
@@ -490,6 +491,14 @@ const buildPayload = () => {
     if (field.key === 'fotos') {
       payload[field.key] = String(rawValue || '')
         .split(/\n|\|/)
+        .map((item) => item.trim())
+        .filter(Boolean);
+      return payload;
+    }
+
+    if (field.key === 'convidados') {
+      payload[field.key] = String(rawValue || '')
+        .split(',')
         .map((item) => item.trim())
         .filter(Boolean);
       return payload;

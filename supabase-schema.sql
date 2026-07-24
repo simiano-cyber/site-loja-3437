@@ -124,10 +124,11 @@ to authenticated
 using (true)
 with check (true);
 
-create policy "Usuarios autenticados leem confirmacoes"
-on public.confirmacoes_presenca for select
+create policy "Usuarios autenticados gerenciam confirmacoes"
+on public.confirmacoes_presenca for all
 to authenticated
-using (true);
+using (true)
+with check (true);
 
 create policy "Usuarios autenticados gerenciam datas"
 on public.datas_importantes for all
