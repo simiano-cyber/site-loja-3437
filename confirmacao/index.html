@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 
 <head>
@@ -345,6 +345,115 @@
         font-size: 15px;
       }
     }
+
+    /* Estilos do Registro de Convidados */
+    .secao-convidados {
+      background: #ebe3d3;
+      border: 1px dashed #c9a35d;
+      padding: 20px;
+      border-radius: 16px;
+      margin-top: 10px;
+      box-sizing: border-box;
+    }
+
+    .convidados-topo {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+
+    .convidados-topo h3 {
+      margin: 0;
+      font-size: 20px;
+      color: #151b5d;
+      font-family: Georgia, serif;
+    }
+
+    .btn-add-convidado {
+      background: #151b5d;
+      color: white;
+      border: none;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      font-size: 22px;
+      font-weight: bold;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 3px 6px rgba(0,0,0,0.15);
+      transition: 0.2s;
+      padding: 0;
+      margin: 0;
+    }
+
+    .btn-add-convidado:hover {
+      background: #0f1446;
+      transform: scale(1.05);
+    }
+
+    .lista-convidados {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .convidado-row {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      width: 100%;
+    }
+
+    .convidado-row input {
+      flex: 1;
+      padding: 14px;
+      border-radius: 10px;
+      border: 1px solid #c9a35d;
+      font-size: 15px;
+      background: #fffdf8;
+    }
+
+    .btn-remover-convidado {
+      background: #b91c1c;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      padding: 14px 18px;
+      cursor: pointer;
+      font-size: 15px;
+      font-weight: bold;
+      transition: 0.2s;
+      white-space: nowrap;
+    }
+
+    .btn-remover-convidado:hover {
+      background: #991b1b;
+    }
+
+    @media (max-width: 768px) {
+      .secao-convidados {
+        padding: 14px;
+      }
+      .convidados-topo h3 {
+        font-size: 17px;
+      }
+      .btn-add-convidado {
+        width: 30px;
+        height: 30px;
+        font-size: 18px;
+      }
+      .convidado-row input {
+        padding: 11px;
+        font-size: 14px;
+      }
+      .btn-remover-convidado {
+        padding: 11px 14px;
+        font-size: 14px;
+      }
+    }
   </style>
 </head>
 
@@ -462,6 +571,17 @@
         required
       >
 
+      <!-- Seção de Convidados Não Maçons -->
+      <div class="secao-convidados">
+        <div class="convidados-topo">
+          <h3>Convidados Não Maçons</h3>
+          <button type="button" id="btnAdicionarConvidado" class="btn-add-convidado">+</button>
+        </div>
+        <div id="listaConvidados" class="lista-convidados">
+          <!-- Inputs dinâmicos de convidados serão inseridos aqui -->
+        </div>
+      </div>
+
       <p class="mensagem-final">
         Solicitamos que cada Ir∴ realize sua confirmação individualmente,
         para adequado dimensionamento de IIr∴ em Loja.
@@ -501,7 +621,7 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="../supabase-config.js?v=20260628-supabase"></script>
-  <script src="script.js?v=20260628-confirmacao-supabase"></script>
+  <script src="script.js?v=20260724-convidados-v1"></script>
 
 </body>
 

@@ -145,8 +145,9 @@ const MODULES = {
       { key: 'potencia', label: 'Potência' },
       { key: 'nome_loja', label: 'Loja' },
       { key: 'telefone', label: 'Telefone' },
+      { key: 'convidados', label: 'Convidados' },
     ],
-    list: ['created_at', 'evento_data', 'evento_titulo', 'nome_completo', 'potencia', 'nome_loja', 'telefone'],
+    list: ['created_at', 'evento_data', 'evento_titulo', 'nome_completo', 'potencia', 'nome_loja', 'telefone', 'convidados'],
   },
   admin_usuarios: {
     title: 'Acessos',

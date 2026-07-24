@@ -1592,14 +1592,15 @@ a {
     text-align: left !important;
 }
 
-.admin-table-confirmacoes_presenca thead th:nth-child(1) { width: 12% !important; } /* Enviado em */
-.admin-table-confirmacoes_presenca thead th:nth-child(2) { width: 9% !important; }  /* Data Reunião */
-.admin-table-confirmacoes_presenca thead th:nth-child(3) { width: 20% !important; } /* Reunião */
-.admin-table-confirmacoes_presenca thead th:nth-child(4) { width: 18% !important; } /* Irmão */
-.admin-table-confirmacoes_presenca thead th:nth-child(5) { width: 8% !important; }  /* Potência */
-.admin-table-confirmacoes_presenca thead th:nth-child(6) { width: 15% !important; } /* Loja */
-.admin-table-confirmacoes_presenca thead th:nth-child(7) { width: 10% !important; } /* Telefone */
-.admin-table-confirmacoes_presenca thead th:nth-child(8) { width: 8% !important; }  /* Ações */
+.admin-table-confirmacoes_presenca thead th:nth-child(1) { width: 10% !important; } /* Enviado em */
+.admin-table-confirmacoes_presenca thead th:nth-child(2) { width: 8% !important; }  /* Data Reunião */
+.admin-table-confirmacoes_presenca thead th:nth-child(3) { width: 17% !important; } /* Reunião */
+.admin-table-confirmacoes_presenca thead th:nth-child(4) { width: 15% !important; } /* Irmão */
+.admin-table-confirmacoes_presenca thead th:nth-child(5) { width: 7% !important; }  /* Potência */
+.admin-table-confirmacoes_presenca thead th:nth-child(6) { width: 13% !important; } /* Loja */
+.admin-table-confirmacoes_presenca thead th:nth-child(7) { width: 9% !important; }  /* Telefone */
+.admin-table-confirmacoes_presenca thead th:nth-child(8) { width: 14% !important; } /* Convidados */
+.admin-table-confirmacoes_presenca thead th:nth-child(9) { width: 7% !important; }  /* Ações */
 
 /* Estilos dos Cards de Resumo de Presenças */
 .presence-summary {

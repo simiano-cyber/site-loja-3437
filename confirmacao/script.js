@@ -124,6 +124,12 @@ form?.addEventListener('submit', async (evento) => {
   const telefoneIrmao = document.getElementById('telefone').value.trim();
   const nomeCompleto = `${tituloIrmao} ${nomeIrmao}`.trim();
 
+  // Coleta os convidados dinâmicos
+  const convidadosInputs = document.querySelectorAll('.convidado-row input');
+  const convidados = Array.from(convidadosInputs)
+    .map((input) => input.value.trim())
+    .filter(Boolean);
+
   if (!reuniaoId || !eventoData) {
     alert('Selecione uma reuniao valida antes de enviar a confirmacao.');
     eventoSelect?.focus();
@@ -142,6 +148,7 @@ form?.addEventListener('submit', async (evento) => {
     numero_loja: numeroLoja,
     nome_loja: nomeLoja,
     telefone: telefoneIrmao,
+    convidados: convidados,
   };
 
   try {
@@ -151,17 +158,29 @@ form?.addEventListener('submit', async (evento) => {
     const { error } = await lojaSupabase.from('confirmacoes_presenca').insert(dados);
     if (error) throw error;
 
-    mensagemConfirmacao.innerHTML =
+    let mensagemSucesso =
       `Confirmacao enviada com sucesso!<br><br>` +
-      `Aguardamos o Ir. <strong>${escaparHTML(nomeCompleto)}</strong><br>` +
+      `Aguardamos o Ir. <strong>${escaparHTML(nomeCompleto)}</strong><br>`;
+
+    if (convidados.length > 0) {
+      mensagemSucesso += `e seus <strong>${convidados.length} convidado(s)</strong><br>`;
+    }
+
+    mensagemSucesso +=
       `para a reuniao:<br><br>` +
       `<strong>${escaparHTML(eventoLabel)}</strong><br><br>` +
       `Local da Sess.:<br>` +
       `Rua Segundo Tenente Aluisio de Faria, No 193<br>` +
       `Jardim Santa Mena - Guarulhos - SP`;
 
+    mensagemConfirmacao.innerHTML = mensagemSucesso;
+
     modal.style.display = 'flex';
     form.reset();
+
+    // Limpa a lista de convidados após enviar
+    const listaConvidados = document.getElementById('listaConvidados');
+    if (listaConvidados) listaConvidados.innerHTML = '';
   } catch (erro) {
     console.warn(erro);
     const detalhe = erro?.message ? `\n\nDetalhe tecnico: ${erro.message}` : '';
@@ -170,6 +189,33 @@ form?.addEventListener('submit', async (evento) => {
     botaoEnviar.disabled = false;
     botaoEnviar.innerText = 'Enviar Confirmacao';
   }
+});
+
+// Adiciona a lógica dinâmica dos convidados
+const btnAdicionarConvidado = document.getElementById('btnAdicionarConvidado');
+const listaConvidados = document.getElementById('listaConvidados');
+
+btnAdicionarConvidado?.addEventListener('click', () => {
+  const row = document.createElement('div');
+  row.className = 'convidado-row';
+
+  const input = document.createElement('input');
+  input.type = 'text';
+  input.placeholder = 'Nome do Convidado';
+  input.required = true;
+
+  const btnRemover = document.createElement('button');
+  btnRemover.type = 'button';
+  btnRemover.className = 'btn-remover-convidado';
+  btnRemover.textContent = 'Remover';
+  btnRemover.addEventListener('click', () => {
+    row.remove();
+  });
+
+  row.appendChild(input);
+  row.appendChild(btnRemover);
+  listaConvidados?.appendChild(row);
+  input.focus();
 });
 
 fecharModal?.addEventListener('click', () => {

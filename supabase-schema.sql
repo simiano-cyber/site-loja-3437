@@ -38,6 +38,7 @@ create table if not exists public.confirmacoes_presenca (
   numero_loja text,
   nome_loja text,
   telefone text,
+  convidados text[] not null default '{}',
   created_at timestamptz not null default now()
 );
 
