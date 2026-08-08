@@ -75,7 +75,7 @@ const criarCardReuniao = (reuniaoOriginal) => {
         <li>A∴M∴: ${Number(reuniao.aprendizes || 0)}</li>
         <li>C∴M∴: ${Number(reuniao.companheiros || 0)}</li>
         <li>M∴M∴: ${Number(reuniao.mestres || 0)}</li>
-        ${Number(reuniao.convidados || 0) ? `<li>Convidados: ${Number(reuniao.convidados)}</li>` : ''}
+        <li>Convidados: ${Number(reuniao.convidados || 0)}</li>
       </ul>
     `
     : '';
@@ -167,6 +167,7 @@ const carregarReunioes = async () => {
       lojaSupabase
       .from('reunioes')
         .select('id,data,titulo,descricao,status,fotos')
+        .neq('status', 'realizada')
         .order('data', { ascending: true }),
       lojaSupabase.rpc('get_reuniao_resumos'),
     ]);
@@ -186,18 +187,20 @@ const carregarReunioes = async () => {
       return accumulator;
     }, { porId: {}, porData: {} });
 
-    const reunioes = (data || []).map((reuniao) => {
-      const resumo = resumosPorReuniao.porId[reuniao.id] || resumosPorReuniao.porData[reuniao.data] || {};
+    const reunioes = (data || [])
+      .filter((reuniao) => String(reuniao.status).toLowerCase() !== 'realizada')
+      .map((reuniao) => {
+        const resumo = resumosPorReuniao.porId[reuniao.id] || resumosPorReuniao.porData[reuniao.data] || {};
 
-      return {
-        ...reuniao,
-        confirmados: resumo.total || 0,
-        convidados: resumo.convidados || 0,
-        aprendizes: resumo.aprendizes || 0,
-        companheiros: resumo.companheiros || 0,
-        mestres: resumo.mestres || 0,
-      };
-    });
+        return {
+          ...reuniao,
+          confirmados: resumo.total || 0,
+          convidados: resumo.convidados || 0,
+          aprendizes: resumo.aprendizes || 0,
+          companheiros: resumo.companheiros || 0,
+          mestres: resumo.mestres || 0,
+        };
+      });
 
     reunioesGrid.innerHTML = reunioes.length
       ? reunioes.map(criarCardReuniao).join('')

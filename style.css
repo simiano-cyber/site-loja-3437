@@ -1630,14 +1630,15 @@ a {
     box-shadow: 0 10px 24px rgba(12, 26, 56, 0.08);
 }
 
+/* Gradientes removidos para padronizar com os outros cards do dashboard */
 .presence-total {
-    background: linear-gradient(135deg, #f4f8ff 0%, #e2eeff 100%);
-    border-color: rgba(36, 100, 197, 0.3);
+    background: #ffffff;
+    border-color: rgba(207, 175, 117, 0.28);
 }
 
 .presence-convidados-card {
-    background: linear-gradient(135deg, #fffcf5 0%, #fff3db 100%);
-    border-color: rgba(183, 138, 53, 0.4);
+    background: #ffffff;
+    border-color: rgba(207, 175, 117, 0.28);
 }
 
 .presence-summary-label {
