@@ -1301,7 +1301,7 @@ a {
     width: 100%;
     border-collapse: collapse;
     min-width: 920px;
-    table-layout: fixed;
+    table-layout: auto;
     font-family: Consolas, 'Courier New', monospace;
 }
 
@@ -1317,13 +1317,7 @@ a {
     font-weight: 700;
 }
 
-.agenda-table thead th:nth-child(1) { width: 14%; }
-.agenda-table thead th:nth-child(2) { width: 18%; }
-.agenda-table thead th:nth-child(3) { width: 30%; }
-.agenda-table thead th:nth-child(4) { width: 11%; }
-.agenda-table thead th:nth-child(5) { width: 8%; }
-.agenda-table thead th:nth-child(6) { width: 7%; }
-.agenda-table thead th:nth-child(7) { width: 12%; }
+
 
 .agenda-row td {
     padding: 11px 14px;
@@ -1332,7 +1326,8 @@ a {
     font-size: .78rem;
     vertical-align: middle;
     background: #fff;
-    word-break: normal;
+    word-break: break-word;
+    overflow-wrap: break-word;
     line-height: 1.25;
 }
 
@@ -1363,9 +1358,7 @@ a {
     text-align: center;
 }
 
-.agenda-row td:nth-child(1) {
-    white-space: nowrap;
-}
+
 
 .agenda-row td:nth-child(2) strong {
     display: inline-block;
