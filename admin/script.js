@@ -22,11 +22,6 @@ const presenceDateFilter = document.getElementById('presenceDateFilter');
 const presenceTitleFilter = document.getElementById('presenceTitleFilter');
 const presenceEventFilter = document.getElementById('presenceEventFilter');
 
-const metricObreiros = document.getElementById('metricObreiros');
-const metricReunioes = document.getElementById('metricReunioes');
-const metricPendentes = document.getElementById('metricPendentes');
-const metricConfirmacoes = document.getElementById('metricConfirmacoes');
-
 const lojaSupabase = window.getLojaSupabaseClient?.();
 
 document.body.dataset.adminScriptLoaded = 'true';
@@ -725,21 +720,7 @@ const countTable = async (table, filter) => {
 };
 
 const loadMetrics = async () => {
-  try {
-    const [obreiros, reunioes, pendentes, confirmacoes] = await Promise.all([
-      countTable('obreiros'),
-      countTable('reunioes'),
-      countTable('pagamentos', (query) => query.eq('status', 'pendente')),
-      countTable('confirmacoes_presenca'),
-    ]);
-
-    metricObreiros.textContent = String(obreiros);
-    metricReunioes.textContent = String(reunioes);
-    metricPendentes.textContent = String(pendentes);
-    metricConfirmacoes.textContent = String(confirmacoes);
-  } catch (error) {
-    console.warn('Nao foi possivel carregar metricas.', error);
-  }
+  // Metricas removidas a pedido do usuario
 };
 
 const initialize = async () => {
