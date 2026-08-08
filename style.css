@@ -1,4 +1,4 @@
-/* =========================================================
+﻿/* =========================================================
    FONTES EXTERNAS
    ========================================================= */
 @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800&family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700;800&display=swap');
@@ -981,8 +981,8 @@ a {
     --admin-delete-text: #dc2626;
     --admin-delete-hover: #fff5f5;
     background:
-        radial-gradient(circle at top, rgba(208,169,87,.1), transparent 22%),
-        linear-gradient(180deg, #041024 0%, #f4efe3 18%, #f4efe3 100%);
+        radial-gradient(circle at top, rgba(208,169,87,.15), transparent 30%),
+        linear-gradient(180deg, #fcfbfa 0%, #f4efe3 100%);
     min-height: 100vh;
 }
 
@@ -995,7 +995,8 @@ a {
 .admin-header {
     display: flex;
     justify-content: space-between;
-    gap: 20px;
+    flex-wrap: wrap;
+    gap: 16px 20px;
     align-items: flex-start;
     margin-bottom: 14px;
 }
@@ -1824,7 +1825,6 @@ a {
         align-items: flex-start;
     }
 
-    .admin-header,
     .admin-panel-header {
         flex-direction: column;
         align-items: flex-start;
@@ -1958,7 +1958,6 @@ a {
         width: 280px;
     }
 
-    .admin-header,
     .admin-panel-header {
         flex-direction: column;
         align-items: flex-start;
