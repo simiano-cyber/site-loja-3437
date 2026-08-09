@@ -1,4 +1,4 @@
-/* =========================================================
+﻿/* =========================================================
    FONTES EXTERNAS
    ========================================================= */
 @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800&family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700;800&display=swap');
@@ -2372,3 +2372,46 @@ a {
   }
 }
 
+
+/* =========================================================
+   DEVELOPER SIGNATURE FOOTER
+   ========================================================= */
+.footer-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+@media (max-width: 600px) {
+    .footer-content {
+        flex-direction: column;
+        text-align: center;
+    }
+}
+
+.developer-signature {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: #8c9cb2;
+    text-decoration: none;
+    font-size: 0.72rem;
+    font-family: 'Inter', sans-serif;
+    text-transform: none;
+    transition: color 0.25s, transform 0.25s;
+}
+
+.developer-signature:hover {
+    color: #ff9d00;
+    transform: translateY(-1px);
+}
+
+.flamigera-logo {
+    display: inline-block;
+    vertical-align: middle;
+}
