@@ -2391,27 +2391,32 @@ a {
     .footer-content {
         flex-direction: column;
         text-align: center;
+        gap: 8px;
     }
 }
 
-.developer-signature {
+.footer .developer-signature {
     display: inline-flex;
     align-items: center;
-    gap: 8px;
-    color: #8c9cb2;
-    text-decoration: none;
-    font-size: 0.72rem;
+    gap: 6px;
+    color: #8c9cb2 !important;
+    text-decoration: none !important;
+    font-size: 0.65rem;
     font-family: 'Inter', sans-serif;
     text-transform: none;
-    transition: color 0.25s, transform 0.25s;
+    transition: opacity 0.25s, transform 0.25s;
+    opacity: 0.8;
 }
 
-.developer-signature:hover {
-    color: #ff9d00;
+.footer .developer-signature:hover {
+    opacity: 1;
+    color: #ff9d00 !important;
     transform: translateY(-1px);
 }
 
-.flamigera-logo {
+.footer .flamigera-logo {
+    height: 14px;
+    width: auto;
     display: inline-block;
     vertical-align: middle;
 }
