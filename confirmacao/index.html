@@ -436,6 +436,59 @@
         font-size: 18px;
       }
     }
+    /* =========================================================
+       DEVELOPER SIGNATURE FOOTER
+       ========================================================= */
+    .footer {
+      color: #151b5d;
+      padding: 20px 0 0 0;
+      font-family: Georgia, serif;
+      border-top: 1px solid rgba(201, 163, 93, 0.3);
+      margin-top: 40px;
+    }
+
+    .footer-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      width: 100%;
+    }
+
+    @media (max-width: 600px) {
+      .footer-content {
+        flex-direction: column;
+        text-align: center;
+        gap: 8px;
+      }
+    }
+
+    .footer .developer-signature {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: #5a6e85 !important;
+      text-decoration: none !important;
+      font-size: 0.65rem;
+      font-family: 'Inter', sans-serif;
+      text-transform: none;
+      transition: opacity 0.25s, transform 0.25s;
+      opacity: 0.8;
+    }
+
+    .footer .developer-signature:hover {
+      opacity: 1;
+      color: #ff9d00 !important;
+      transform: translateY(-1px);
+    }
+
+    .footer .flamigera-logo {
+      height: 14px;
+      width: auto;
+      display: inline-block;
+      vertical-align: middle;
+    }
   </style>
 </head>
 
@@ -580,6 +633,16 @@
 
     </form>
 
+    <footer class="footer">
+      <div class="footer-content">
+        <p>&copy; 2026 - A&#8756;R&#8756;L&#8756;S&#8756; Tradi&ccedil;&atilde;o e Progresso 3437</p>
+        <a class="developer-signature" href="https://wa.me/5511996930689" target="_blank" rel="noopener noreferrer" title="Fale com a Flamigera no WhatsApp">
+          <span>Desenvolvido por:</span>
+          <img class="flamigera-logo" src="../assets/img/flamigera_logo_inferior_transparente.png" alt="Flamigera Desenvolvimento" />
+        </a>
+      </div>
+    </footer>
+
   </div>
 
   <div id="modalConfirmacao" class="modal-confirmacao">
@@ -598,15 +661,7 @@
 
   </div>
 
-  <footer class="footer">
-    <div class="footer-content">
-      <p>&copy; 2026 - A&#8756;R&#8756;L&#8756;S&#8756; Tradi&ccedil;&atilde;o e Progresso 3437</p>
-      <a class="developer-signature" href="https://wa.me/5511996930689" target="_blank" rel="noopener noreferrer" title="Fale com a Flamigera no WhatsApp">
-        <span>Desenvolvido por:</span>
-        <img class="flamigera-logo" src="../assets/img/flamigera_logo_inferior_transparente.png" alt="Flamigera Desenvolvimento" />
-      </a>
-    </div>
-  </footer>
+
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="../supabase-config.js?v=20260628-supabase"></script>

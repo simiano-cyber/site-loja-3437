@@ -777,12 +777,12 @@ a {
    RODAPÉ
    ========================================================= */
 .footer {
-    background: #020a18;
-    color: var(--dourado);
+    background: #f4efe3;
+    color: #1a3e72;
     text-align: center;
-    padding: 14px 5%;
+    padding: 18px 5%;
     font-family: 'Cinzel', serif;
-    border-top: 1px solid var(--borda);
+    border-top: 1px solid #dcd5c5;
 }
 
 
