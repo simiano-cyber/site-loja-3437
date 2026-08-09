@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 
 <head>
@@ -449,32 +449,29 @@
 
     .footer-content {
       display: flex;
-      justify-content: space-between;
+      flex-direction: column;
       align-items: center;
-      flex-wrap: wrap;
-      gap: 12px;
+      gap: 10px;
       width: 100%;
     }
 
-    @media (max-width: 600px) {
-      .footer-content {
-        flex-direction: column;
-        text-align: center;
-        gap: 8px;
-      }
+    .footer p {
+      margin: 0;
+      font-size: 0.9rem;
+      text-align: center;
     }
 
     .footer .developer-signature {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
-      color: #5a6e85 !important;
+      gap: 8px;
+      color: #3b4b5e !important;
       text-decoration: none !important;
-      font-size: 0.65rem;
+      font-size: 0.78rem;
       font-family: 'Inter', sans-serif;
       text-transform: none;
       transition: opacity 0.25s, transform 0.25s;
-      opacity: 0.8;
+      opacity: 0.85;
     }
 
     .footer .developer-signature:hover {
@@ -484,7 +481,7 @@
     }
 
     .footer .flamigera-logo {
-      height: 14px;
+      height: 18px;
       width: auto;
       display: inline-block;
       vertical-align: middle;
