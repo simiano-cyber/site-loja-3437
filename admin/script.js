@@ -165,6 +165,10 @@ let activeModuleKey = 'reunioes';
 let activeRows = [];
 let editingId = null;
 
+let currentSortKey = null;
+let currentSortDirection = 'asc';
+let columnFilters = {};
+
 const setStatus = (message, type = '') => {
   if (!syncStatus) return;
   syncStatus.textContent = message;
@@ -512,11 +516,47 @@ const buildPayload = () => {
 const renderTable = () => {
   const module = getCurrentModule();
   const visibleColumns = module.columns.filter((field) => module.list.includes(field.key));
+  
+  // 1. General search term
+  let rows = activeRows;
   const term = normalizeSearch(moduleSearch.value);
-  const rows = term
-    ? activeRows.filter((row) => normalizeSearch(Object.values(row).join(' ')).includes(term))
-    : activeRows;
-  const filteredRows = aplicarFiltrosPresenca(rows);
+  if (term) {
+    rows = rows.filter((row) => normalizeSearch(Object.values(row).join(' ')).includes(term));
+  }
+  
+  // 2. Column-specific filters
+  Object.keys(columnFilters).forEach((key) => {
+    const filterValue = columnFilters[key];
+    if (filterValue !== undefined && filterValue !== null && filterValue !== '') {
+      const filterTerm = normalizeSearch(filterValue);
+      rows = rows.filter((row) => {
+        const val = row[key];
+        if (val === null || val === undefined) return false;
+        const valStr = Array.isArray(val) ? val.join(' ') : String(val);
+        return normalizeSearch(valStr).includes(filterTerm);
+      });
+    }
+  });
+
+  let filteredRows = aplicarFiltrosPresenca(rows);
+
+  // 3. Sorting rows
+  if (currentSortKey) {
+    filteredRows.sort((a, b) => {
+      let valA = a[currentSortKey];
+      let valB = b[currentSortKey];
+      
+      if (valA === null || valA === undefined) valA = '';
+      if (valB === null || valB === undefined) valB = '';
+      
+      if (typeof valA === 'string') valA = valA.toLowerCase();
+      if (typeof valB === 'string') valB = valB.toLowerCase();
+      
+      if (valA < valB) return currentSortDirection === 'asc' ? -1 : 1;
+      if (valA > valB) return currentSortDirection === 'asc' ? 1 : -1;
+      return 0;
+    });
+  }
 
   const tableEl = document.querySelector('.admin-data-table');
   if (tableEl) {
@@ -563,10 +603,53 @@ const renderTable = () => {
     if (valElAM) valElAM.textContent = String(ap);
   }
 
+  const getSortIndicator = (key) => {
+    if (currentSortKey !== key) return '↕';
+    return currentSortDirection === 'asc' ? '▲' : '▼';
+  };
+
+  const getSortClass = (key) => {
+    return currentSortKey === key ? 'active' : '';
+  };
+
+  const getFilterElement = (field) => {
+    const value = columnFilters[field.key] || '';
+    if (field.type === 'select') {
+      const options = (field.options || [])
+        .map((opt) => `<option value="${escapeHTML(opt)}" ${opt === value ? 'selected' : ''}>${escapeHTML(opt)}</option>`)
+        .join('');
+      return `
+        <select class="th-filter-select" data-filter="${field.key}">
+          <option value="">Todos</option>
+          ${options}
+        </select>
+      `;
+    } else if (field.type === 'checkbox') {
+      return `
+        <select class="th-filter-select" data-filter="${field.key}">
+          <option value="">Todos</option>
+          <option value="true" ${value === 'true' ? 'selected' : ''}>Sim</option>
+          <option value="false" ${value === 'false' ? 'selected' : ''}>Não</option>
+        </select>
+      `;
+    }
+    return `<input type="text" class="th-filter-input" data-filter="${field.key}" value="${escapeHTML(value)}" placeholder="Filtrar..." />`;
+  };
+
   moduleTableHead.innerHTML = `
     <tr>
-      ${visibleColumns.map((field) => `<th>${escapeHTML(field.label)}</th>`).join('')}
-      <th>Acoes</th>
+      ${visibleColumns.map((field) => `
+        <th>
+          <div class="th-content">
+            <div class="th-header-line" data-sort="${field.key}">
+              <span>${escapeHTML(field.label)}</span>
+              <span class="sort-indicator ${getSortClass(field.key)}">${getSortIndicator(field.key)}</span>
+            </div>
+            ${getFilterElement(field)}
+          </div>
+        </th>
+      `).join('')}
+      <th>Ações</th>
     </tr>
   `;
 
@@ -621,10 +704,52 @@ const renderTable = () => {
   moduleTableBody.querySelectorAll('[data-delete]').forEach((button) => {
     button.addEventListener('click', () => deleteRow(button.dataset.delete));
   });
+
+  // Attach sort handlers
+  moduleTableHead.querySelectorAll('.th-header-line').forEach((el) => {
+    el.addEventListener('click', () => {
+      const key = el.dataset.sort;
+      if (currentSortKey === key) {
+        currentSortDirection = currentSortDirection === 'asc' ? 'desc' : 'asc';
+      } else {
+        currentSortKey = key;
+        currentSortDirection = 'asc';
+      }
+      renderTable();
+    });
+  });
+
+  // Attach filter handlers
+  moduleTableHead.querySelectorAll('[data-filter]').forEach((el) => {
+    const key = el.dataset.filter;
+    const eventName = el.tagName === 'SELECT' ? 'change' : 'input';
+    
+    el.addEventListener(eventName, (e) => {
+      columnFilters[key] = e.target.value;
+      renderTable();
+      // Refocus the element so the user can continue typing/selecting
+      const refocused = moduleTableHead.querySelector(`[data-filter="${key}"]`);
+      if (refocused) {
+        refocused.focus();
+        if (refocused.tagName === 'INPUT') {
+          const valLen = refocused.value.length;
+          refocused.setSelectionRange(valLen, valLen);
+        }
+      }
+    });
+  });
 };
 
 const loadModule = async () => {
   const module = getCurrentModule();
+  
+  if (window.lastLoadedModuleKey !== activeModuleKey) {
+    currentSortKey = null;
+    currentSortDirection = 'asc';
+    columnFilters = {};
+    window.lastLoadedModuleKey = activeModuleKey;
+  }
+
   moduleTitle.textContent = module.title;
   moduleDescription.textContent = module.description;
   btnNovoRegistro.hidden = Boolean(module.readonly || module.allowCreate === false);

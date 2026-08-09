@@ -1,4 +1,4 @@
-﻿/* =========================================================
+/* =========================================================
    FONTES EXTERNAS
    ========================================================= */
 @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800&family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700;800&display=swap');
@@ -1315,6 +1315,58 @@ a {
     background: #f6faff;
     border-bottom: 1px solid #dce8f6;
     font-weight: 700;
+}
+
+.th-content {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    align-items: stretch;
+}
+
+.th-header-line {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+}
+
+.th-header-line:hover {
+    color: #1a3e72;
+}
+
+.th-filter-select,
+.th-filter-input {
+    width: 100%;
+    border: 1px solid #dce8f6;
+    border-radius: 6px;
+    padding: 4px 6px;
+    font-size: 0.7rem;
+    font-family: inherit;
+    background: #fff;
+    color: #415066;
+    outline: none;
+    font-weight: normal;
+    text-transform: none;
+    box-sizing: border-box;
+}
+
+.th-filter-select:focus,
+.th-filter-input:focus {
+    border-color: #c9a35d;
+    box-shadow: 0 0 4px rgba(201, 163, 93, 0.2);
+}
+
+.sort-indicator {
+    font-size: 0.65rem;
+    color: #a0aec0;
+    margin-left: 4px;
+}
+
+.sort-indicator.active {
+    color: #c9a35d;
+    font-weight: bold;
 }
 
 
